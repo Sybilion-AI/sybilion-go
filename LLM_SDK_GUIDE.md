@@ -33,7 +33,7 @@ replace go.sybilion.dev/sybilion => /absolute/path/to/sybilion-go
 | Variable | Required | Role |
 |----------|----------|------|
 | `SYBILION_API_TOKEN` | Yes for real calls | Bearer token: API key `sk_ops_...` or a dashboard session token. Read in your app and pass `sybilion.Options{Token: ...}`. The wrapper does **not** read this env var by itself. |
-| `SYBILION_API_BASE_URL` | No | When `Options.BaseURL` is empty, `sybilion.New` uses this env var, then the compiled default `sybilion.DefaultPublicAPIBaseURL`. (`OPERATIONAL_API_BASE_URL` is accepted as a deprecated alias for one transition release.) |
+| `SYBILION_API_BASE_URL` | No | When `Options.BaseURL` is empty, `sybilion.New` reads this env var, then the compiled default `sybilion.DefaultPublicAPIBaseURL`. Resolution order: non-empty `Options.BaseURL`, else `SYBILION_API_BASE_URL`, else default. |
 
 ## Default API origin
 

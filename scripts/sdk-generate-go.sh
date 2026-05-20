@@ -46,4 +46,6 @@ fi
 (cd "${ROOT}" && go run ./cmd/embed-go-defaults)
 gofmt -w "${ROOT}/defaults_gen.go"
 
+rm -rf "${ROOT}/api/test" "${ROOT}/api/git_push.sh" "${ROOT}/api/.travis.yml" 2>/dev/null || true
+
 echo "sdk-generate-go: complete."

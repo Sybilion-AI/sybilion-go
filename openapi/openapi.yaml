@@ -1,26 +1,5 @@
 components:
     schemas:
-        AutoRechargePatch:
-            properties:
-                below_eur_cents:
-                    description: Trigger threshold in EUR cents (>= 1 when enabled).
-                    format: int64
-                    type: integer
-                enabled:
-                    type: boolean
-                monthly_cap_cents:
-                    format: int64
-                    type: integer
-                target_eur_cents:
-                    description: Target balance in EUR cents (> below_eur_cents when enabled).
-                    format: int64
-                    type: integer
-            required:
-                - enabled
-                - below_eur_cents
-                - target_eur_cents
-                - monthly_cap_cents
-            type: object
         AutoRechargeState:
             properties:
                 below_eur_cents:
@@ -69,16 +48,6 @@ components:
                     type: array
             required:
                 - items
-            type: object
-        CheckoutRequest:
-            properties:
-                amount_cents:
-                    description: Min 500 (€5.00) by default; server-enforced
-                    format: int64
-                    type: integer
-                currency:
-                    default: eur
-                    type: string
             type: object
         ErrorMessage:
             properties:
@@ -133,7 +102,7 @@ components:
                         type: integer
                     type: array
                 limit:
-                    maximum: 1000
+                    maximum: 10000
                     minimum: 0
                     type: integer
                 regions:
@@ -158,9 +127,10 @@ components:
             type: object
         ForecastRequestV1:
             description: |
-                Body of `POST /api/v1/forecasts`. Optional **`filters`**: when present, each
+                Body of `POST /api/v1/forecasts`. Provide at least one of **`soft_horizon`** or **`hard_horizon`**
+                (see property descriptions). Optional **`filters`**: when present, each
                 **`categories[]`** and **`regions[]`** value is an integer **1–9999** inclusive;
-                optional **`limit`** is **0–1000**. See component **`Filters`** for the full schema.
+                optional **`limit`** is **0–10000**. See component **`Filters`** for the full schema.
             properties:
                 backtest:
                     description: When true, run a backtest evaluation alongside the forecast.
@@ -170,14 +140,19 @@ components:
                         - $ref: '#/components/schemas/Filters'
                     description: |
                         Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999**
-                        (inclusive). Optional **`limit`** is **0–1000**. Values are not verified against catalog APIs.
+                        (inclusive). Optional **`limit`** is **0–10000**. Values are not verified against catalog APIs.
                 frequency:
                     description: Series cadence. Only "monthly" is currently supported; "daily" and "weekly" are reserved.
                     enum:
                         - monthly
                     type: string
-                horizon:
-                    description: Number of forecast steps to produce.
+                hard_horizon:
+                    description: |
+                        Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the
+                        pipeline falls back to a driverless forecast at `soft_horizon` if no quality run succeeds.
+                        When still failing at `hard_horizon`, the pipeline emits a driverless forecast at that horizon.
+                        At least one of `soft_horizon` or `hard_horizon` must be present. When both are set,
+                        `hard_horizon` must be less than or equal to `soft_horizon`. Maximum 12.
                     maximum: 12
                     minimum: 1
                     type: integer
@@ -191,6 +166,15 @@ components:
                     maximum: 1
                     minimum: 0
                     type: number
+                soft_horizon:
+                    description: |
+                        Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month
+                        until it reaches `hard_horizon` (when set) while seeking a quality forecast. At least one of
+                        `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be
+                        less than or equal to `soft_horizon`. Maximum 12.
+                    maximum: 12
+                    minimum: 1
+                    type: integer
                 strictly_positive:
                     default: false
                     description: |
@@ -211,7 +195,6 @@ components:
                     $ref: '#/components/schemas/TimeseriesMetadata'
             required:
                 - pipeline_version
-                - horizon
                 - frequency
                 - recency_factor
                 - timeseries_metadata
@@ -418,7 +401,7 @@ components:
                 payload entirely (no `null` is sent).
 
                 When `filters` is present, **`categories[]`** and **`regions[]`** follow the same rules as
-                `POST /api/v1/forecasts`: each integer must be **1–9999** inclusive; optional **`limit`** is **0–1000**.
+                `POST /api/v1/forecasts`: each integer must be **1–9999** inclusive; optional **`limit`** is **0–10000**.
                 See schema **`Filters`** for the canonical shape.
             properties:
                 filters:
@@ -426,7 +409,7 @@ components:
                         - $ref: '#/components/schemas/Filters'
                     description: |
                         Optional. Same validation as **`POST /api/v1/forecasts`**: each **`categories[]`** and
-                        **`regions[]`** entry is an integer **1–9999** (inclusive); optional **`limit`** is **0–1000**.
+                        **`regions[]`** entry is an integer **1–9999** (inclusive); optional **`limit`** is **0–10000**.
                         Values are not verified against catalog APIs.
                 recency_factor:
                     format: double
@@ -458,76 +441,6 @@ components:
                 - version
                 - recency_factor
                 - timeseries_metadata
-            type: object
-        TierConfig:
-            properties:
-                general_rpm:
-                    description: Per-minute cap on general authenticated /api/v1/* requests at this tier.
-                    type: integer
-                level:
-                    description: Tier level identifier (0 is the baseline).
-                    type: integer
-                max_concurrent_jobs:
-                    description: Maximum in-flight async forecast jobs (queued + running) at this tier.
-                    type: integer
-                min_lifetime_paid_cents:
-                    description: Minimum lifetime payment in EUR cents to reach this tier.
-                    format: int64
-                    type: integer
-                min_payment_count:
-                    description: Minimum number of successful payments to reach this tier.
-                    type: integer
-                min_single_payment_cents:
-                    description: Minimum single payment in EUR cents to reach this tier; 0 means no constraint.
-                    format: int64
-                    type: integer
-                sync_billed_rpm:
-                    description: Per-minute cap on synchronous billed endpoints (e.g. POST /drivers) at this tier.
-                    type: integer
-            required:
-                - level
-                - min_lifetime_paid_cents
-                - min_payment_count
-                - min_single_payment_cents
-                - general_rpm
-                - sync_billed_rpm
-                - max_concurrent_jobs
-            type: object
-        TiersResponse:
-            properties:
-                current_tier:
-                    description: The caller's current api_usage_tier.
-                    type: integer
-                next_tier:
-                    description: Lowest level greater than current_tier in the ladder, or null when already at the top.
-                    nullable: true
-                    type: integer
-                progress:
-                    properties:
-                        lifetime_paid_cents:
-                            format: int64
-                            type: integer
-                        max_single_payment_cents:
-                            description: Largest single payment amount (in EUR cents) on the caller's account; 0 if none.
-                            format: int64
-                            type: integer
-                        payment_count:
-                            type: integer
-                    required:
-                        - lifetime_paid_cents
-                        - payment_count
-                        - max_single_payment_cents
-                    type: object
-                tiers:
-                    description: Pricing tier ladder, sorted ascending by level.
-                    items:
-                        $ref: '#/components/schemas/TierConfig'
-                    type: array
-            required:
-                - current_tier
-                - next_tier
-                - progress
-                - tiers
             type: object
         TimeseriesMetadata:
             properties:
@@ -712,7 +625,7 @@ paths:
                 Request body is `ForecastRequestV1`. Optional top-level `filters`, when present,
                 may include `categories` and `regions` arrays: **each integer must be between 1 and 9999**
                 (inclusive). The API does not verify ids against a catalog. Optional `limit` is
-                an integer from **0** to **1000**. See schema `Filters` for the full shape.
+                an integer from **0** to **10000**. See schema `Filters` for the full shape.
             requestBody:
                 content:
                     application/json:
@@ -969,24 +882,6 @@ paths:
             security:
                 - bearerAuth: []
             summary: List regions
-    /api/v1/tiers:
-        get:
-            description: |
-                Returns the pricing tier ladder, the caller's current `api_usage_tier`, the
-                next reachable level (or `null` if already on the highest), and the caller's
-                progress toward it.
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/TiersResponse'
-                    description: OK
-                "401":
-                    description: Unauthorized
-            security:
-                - bearerAuth: []
-            summary: Pricing tier ladder, your current tier, and progress
     /api/v1/usage:
         get:
             description: |

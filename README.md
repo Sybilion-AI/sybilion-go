@@ -35,7 +35,17 @@ func main() {
 }
 ```
 
-The token is an API key (`sk_ops_...`) created in the Developers Portal, or a dashboard session token. The default base URL is `https://api.sybilion.dev`; override per-process with `SYBILION_API_BASE_URL` or per-call via `Options.BaseURL`.
+The token is an API key (`sk_ops_...`) created in the Developers Portal, or a dashboard session token.
+
+### Base URL
+
+Resolution order:
+
+1. `Options.BaseURL` when non-empty
+2. `SYBILION_API_BASE_URL` in the process environment (optional)
+3. Compiled default `https://api.sybilion.dev`
+
+The wrapper does not read the API token from the environment; pass `Options.Token` explicitly (often from `SYBILION_API_TOKEN` or your own secret store).
 
 ## What's in the box
 

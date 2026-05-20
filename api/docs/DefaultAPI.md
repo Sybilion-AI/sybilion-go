@@ -12,7 +12,6 @@ Method | HTTP request | Description
 [**ApiV1JobsGet**](DefaultAPI.md#ApiV1JobsGet) | **Get** /api/v1/jobs | Paginated list of the caller&#39;s async jobs
 [**ApiV1MeGet**](DefaultAPI.md#ApiV1MeGet) | **Get** /api/v1/me | Current user, balances, and usage tier
 [**ApiV1RegionsGet**](DefaultAPI.md#ApiV1RegionsGet) | **Get** /api/v1/regions | List regions
-[**ApiV1TiersGet**](DefaultAPI.md#ApiV1TiersGet) | **Get** /api/v1/tiers | Pricing tier ladder, your current tier, and progress
 [**ApiV1UsageGet**](DefaultAPI.md#ApiV1UsageGet) | **Get** /api/v1/usage | Paginated usage (charged tasks)
 [**HealthGet**](DefaultAPI.md#HealthGet) | **Get** /health | Health check
 
@@ -303,7 +302,7 @@ import (
 )
 
 func main() {
-	forecastRequestV1 := *openapiclient.NewForecastRequestV1("Frequency_example", int32(123), "PipelineVersion_example", float64(123), map[string]float32{"key": float32(123)}, *openapiclient.NewTimeseriesMetadata("Title_example")) // ForecastRequestV1 | 
+	forecastRequestV1 := *openapiclient.NewForecastRequestV1("Frequency_example", "PipelineVersion_example", float64(123), map[string]float32{"key": float32(123)}, *openapiclient.NewTimeseriesMetadata("Title_example")) // ForecastRequestV1 | 
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
@@ -529,67 +528,6 @@ Other parameters are passed through a pointer to a apiApiV1RegionsGetRequest str
 ### Return type
 
 [**CatalogListResponse**](CatalogListResponse.md)
-
-### Authorization
-
-[bearerAuth](../README.md#bearerAuth)
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../README.md#documentation-for-models)
-[[Back to README]](../README.md)
-
-
-## ApiV1TiersGet
-
-> TiersResponse ApiV1TiersGet(ctx).Execute()
-
-Pricing tier ladder, your current tier, and progress
-
-
-
-### Example
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-	openapiclient "go.sybilion.dev/sybilion/api"
-)
-
-func main() {
-
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.DefaultAPI.ApiV1TiersGet(context.Background()).Execute()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.ApiV1TiersGet``: %v\n", err)
-		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-	}
-	// response from `ApiV1TiersGet`: TiersResponse
-	fmt.Fprintf(os.Stdout, "Response from `DefaultAPI.ApiV1TiersGet`: %v\n", resp)
-}
-```
-
-### Path Parameters
-
-This endpoint does not need any parameter.
-
-### Other Parameters
-
-Other parameters are passed through a pointer to a apiApiV1TiersGetRequest struct via the builder pattern
-
-
-### Return type
-
-[**TiersResponse**](TiersResponse.md)
 
 ### Authorization
 

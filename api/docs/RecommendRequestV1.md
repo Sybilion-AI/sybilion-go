@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Filters** | Pointer to [**Filters**](Filters.md) | Optional. Same validation as **&#x60;POST /api/v1/forecasts&#x60;**: each **&#x60;categories[]&#x60;** and **&#x60;regions[]&#x60;** entry is an integer **1–9999** (inclusive); optional **&#x60;limit&#x60;** is **0–1000**. Values are not verified against catalog APIs.  | [optional] 
+**Filters** | Pointer to [**Filters**](Filters.md) | Optional. Same validation as **&#x60;POST /api/v1/forecasts&#x60;**: each **&#x60;categories[]&#x60;** and **&#x60;regions[]&#x60;** entry is an integer **1–9999** (inclusive); optional **&#x60;limit&#x60;** is **0–10000**. Values are not verified against catalog APIs.  | [optional] 
 **RecencyFactor** | **float64** |  | 
 **Timeseries** | Pointer to **map[string]float32** | Optional. Map of YYYY-MM-DD date keys to numeric observation values. When supplied, all keys must parse as YYYY-MM-DD and all values must be finite. Unlike &#x60;/forecasts&#x60;, this endpoint is frequency-agnostic — there is no monthly alignment, gap detection, or 60-point minimum. When omitted, the handler does not forward the field to the upstream Recommend service at all.  | [optional] 
 **TimeseriesMetadata** | [**TimeseriesMetadata**](TimeseriesMetadata.md) |  | 

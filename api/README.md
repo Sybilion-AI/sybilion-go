@@ -89,7 +89,6 @@ Class | Method | HTTP request | Description
 *DefaultAPI* | [**ApiV1JobsGet**](docs/DefaultAPI.md#apiv1jobsget) | **Get** /api/v1/jobs | Paginated list of the caller&#39;s async jobs
 *DefaultAPI* | [**ApiV1MeGet**](docs/DefaultAPI.md#apiv1meget) | **Get** /api/v1/me | Current user, balances, and usage tier
 *DefaultAPI* | [**ApiV1RegionsGet**](docs/DefaultAPI.md#apiv1regionsget) | **Get** /api/v1/regions | List regions
-*DefaultAPI* | [**ApiV1TiersGet**](docs/DefaultAPI.md#apiv1tiersget) | **Get** /api/v1/tiers | Pricing tier ladder, your current tier, and progress
 *DefaultAPI* | [**ApiV1UsageGet**](docs/DefaultAPI.md#apiv1usageget) | **Get** /api/v1/usage | Paginated usage (charged tasks)
 *DefaultAPI* | [**HealthGet**](docs/DefaultAPI.md#healthget) | **Get** /health | Health check
 
@@ -100,10 +99,8 @@ Class | Method | HTTP request | Description
  - [ApiV1ForecastsPost202Response](docs/ApiV1ForecastsPost202Response.md)
  - [ApiV1JobsGet200Response](docs/ApiV1JobsGet200Response.md)
  - [ApiV1UsageGet200Response](docs/ApiV1UsageGet200Response.md)
- - [AutoRechargePatch](docs/AutoRechargePatch.md)
  - [AutoRechargeState](docs/AutoRechargeState.md)
  - [CatalogListResponse](docs/CatalogListResponse.md)
- - [CheckoutRequest](docs/CheckoutRequest.md)
  - [ErrorMessage](docs/ErrorMessage.md)
  - [EuroTranche](docs/EuroTranche.md)
  - [Filters](docs/Filters.md)
@@ -115,9 +112,6 @@ Class | Method | HTTP request | Description
  - [MeResponseSignupTrial](docs/MeResponseSignupTrial.md)
  - [Pagination](docs/Pagination.md)
  - [RecommendRequestV1](docs/RecommendRequestV1.md)
- - [TierConfig](docs/TierConfig.md)
- - [TiersResponse](docs/TiersResponse.md)
- - [TiersResponseProgress](docs/TiersResponseProgress.md)
  - [TimeseriesMetadata](docs/TimeseriesMetadata.md)
  - [UsageEvent](docs/UsageEvent.md)
  - [ValidationErrorResponse](docs/ValidationErrorResponse.md)

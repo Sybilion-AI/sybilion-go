@@ -9,10 +9,8 @@ docs/ApiV1ForecastsIdGet200Response.md
 docs/ApiV1ForecastsPost202Response.md
 docs/ApiV1JobsGet200Response.md
 docs/ApiV1UsageGet200Response.md
-docs/AutoRechargePatch.md
 docs/AutoRechargeState.md
 docs/CatalogListResponse.md
-docs/CheckoutRequest.md
 docs/DefaultAPI.md
 docs/ErrorMessage.md
 docs/EuroTranche.md
@@ -25,9 +23,6 @@ docs/MeResponse.md
 docs/MeResponseSignupTrial.md
 docs/Pagination.md
 docs/RecommendRequestV1.md
-docs/TierConfig.md
-docs/TiersResponse.md
-docs/TiersResponseProgress.md
 docs/TimeseriesMetadata.md
 docs/UsageEvent.md
 docs/ValidationErrorResponse.md
@@ -37,10 +32,8 @@ model__api_v1_forecasts__id__get_200_response.go
 model__api_v1_forecasts_post_202_response.go
 model__api_v1_jobs_get_200_response.go
 model__api_v1_usage_get_200_response.go
-model_auto_recharge_patch.go
 model_auto_recharge_state.go
 model_catalog_list_response.go
-model_checkout_request.go
 model_error_message.go
 model_euro_tranche.go
 model_filters.go
@@ -52,9 +45,6 @@ model_me_response.go
 model_me_response_signup_trial.go
 model_pagination.go
 model_recommend_request_v1.go
-model_tier_config.go
-model_tiers_response.go
-model_tiers_response_progress.go
 model_timeseries_metadata.go
 model_usage_event.go
 model_validation_error_response.go

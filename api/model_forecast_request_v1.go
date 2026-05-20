@@ -19,19 +19,21 @@ import (
 // checks if the ForecastRequestV1 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ForecastRequestV1{}
 
-// ForecastRequestV1 Body of `POST /api/v1/forecasts`. Optional **`filters`**: when present, each **`categories[]`** and **`regions[]`** value is an integer **1–9999** inclusive; optional **`limit`** is **0–1000**. See component **`Filters`** for the full schema. 
+// ForecastRequestV1 Body of `POST /api/v1/forecasts`. Provide at least one of **`soft_horizon`** or **`hard_horizon`** (see property descriptions). Optional **`filters`**: when present, each **`categories[]`** and **`regions[]`** value is an integer **1–9999** inclusive; optional **`limit`** is **0–10000**. See component **`Filters`** for the full schema. 
 type ForecastRequestV1 struct {
 	// When true, run a backtest evaluation alongside the forecast.
 	Backtest *bool `json:"backtest,omitempty"`
-	// Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999** (inclusive). Optional **`limit`** is **0–1000**. Values are not verified against catalog APIs. 
+	// Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999** (inclusive). Optional **`limit`** is **0–10000**. Values are not verified against catalog APIs. 
 	Filters *Filters `json:"filters,omitempty"`
 	// Series cadence. Only \"monthly\" is currently supported; \"daily\" and \"weekly\" are reserved.
 	Frequency string `json:"frequency"`
-	// Number of forecast steps to produce.
-	Horizon int32 `json:"horizon"`
+	// Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the pipeline falls back to a driverless forecast at `soft_horizon` if no quality run succeeds. When still failing at `hard_horizon`, the pipeline emits a driverless forecast at that horizon. At least one of `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be less than or equal to `soft_horizon`. Maximum 12. 
+	HardHorizon *int32 `json:"hard_horizon,omitempty"`
 	// Pipeline version. Closed set; no aliases or \"latest\" resolution. Only v1 is supported today.
 	PipelineVersion string `json:"pipeline_version"`
 	RecencyFactor float64 `json:"recency_factor"`
+	// Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month until it reaches `hard_horizon` (when set) while seeking a quality forecast. At least one of `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be less than or equal to `soft_horizon`. Maximum 12. 
+	SoftHorizon *int32 `json:"soft_horizon,omitempty"`
 	// When true, every value in `timeseries` must be `>= 0` (zero is allowed); a single negative observation rejects the request with 422. The downstream forecasting pipeline (PPL) also clamps the produced forecast at zero so no output point can be negative. Defaults to false, in which case no positivity constraint is applied to inputs or outputs and negative values are returned unchanged. Optional. 
 	StrictlyPositive *bool `json:"strictly_positive,omitempty"`
 	// Map of YYYY-MM-DD date keys to numeric observation values. Must contain at least 60 points (5 years of monthly history) and be aligned to the declared frequency.
@@ -45,10 +47,9 @@ type _ForecastRequestV1 ForecastRequestV1
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewForecastRequestV1(frequency string, horizon int32, pipelineVersion string, recencyFactor float64, timeseries map[string]float32, timeseriesMetadata TimeseriesMetadata) *ForecastRequestV1 {
+func NewForecastRequestV1(frequency string, pipelineVersion string, recencyFactor float64, timeseries map[string]float32, timeseriesMetadata TimeseriesMetadata) *ForecastRequestV1 {
 	this := ForecastRequestV1{}
 	this.Frequency = frequency
-	this.Horizon = horizon
 	this.PipelineVersion = pipelineVersion
 	this.RecencyFactor = recencyFactor
 	var strictlyPositive bool = false
@@ -156,28 +157,36 @@ func (o *ForecastRequestV1) SetFrequency(v string) {
 	o.Frequency = v
 }
 
-// GetHorizon returns the Horizon field value
-func (o *ForecastRequestV1) GetHorizon() int32 {
-	if o == nil {
+// GetHardHorizon returns the HardHorizon field value if set, zero value otherwise.
+func (o *ForecastRequestV1) GetHardHorizon() int32 {
+	if o == nil || IsNil(o.HardHorizon) {
 		var ret int32
 		return ret
 	}
-
-	return o.Horizon
+	return *o.HardHorizon
 }
 
-// GetHorizonOk returns a tuple with the Horizon field value
+// GetHardHorizonOk returns a tuple with the HardHorizon field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ForecastRequestV1) GetHorizonOk() (*int32, bool) {
-	if o == nil {
+func (o *ForecastRequestV1) GetHardHorizonOk() (*int32, bool) {
+	if o == nil || IsNil(o.HardHorizon) {
 		return nil, false
 	}
-	return &o.Horizon, true
+	return o.HardHorizon, true
 }
 
-// SetHorizon sets field value
-func (o *ForecastRequestV1) SetHorizon(v int32) {
-	o.Horizon = v
+// HasHardHorizon returns a boolean if a field has been set.
+func (o *ForecastRequestV1) HasHardHorizon() bool {
+	if o != nil && !IsNil(o.HardHorizon) {
+		return true
+	}
+
+	return false
+}
+
+// SetHardHorizon gets a reference to the given int32 and assigns it to the HardHorizon field.
+func (o *ForecastRequestV1) SetHardHorizon(v int32) {
+	o.HardHorizon = &v
 }
 
 // GetPipelineVersion returns the PipelineVersion field value
@@ -226,6 +235,38 @@ func (o *ForecastRequestV1) GetRecencyFactorOk() (*float64, bool) {
 // SetRecencyFactor sets field value
 func (o *ForecastRequestV1) SetRecencyFactor(v float64) {
 	o.RecencyFactor = v
+}
+
+// GetSoftHorizon returns the SoftHorizon field value if set, zero value otherwise.
+func (o *ForecastRequestV1) GetSoftHorizon() int32 {
+	if o == nil || IsNil(o.SoftHorizon) {
+		var ret int32
+		return ret
+	}
+	return *o.SoftHorizon
+}
+
+// GetSoftHorizonOk returns a tuple with the SoftHorizon field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ForecastRequestV1) GetSoftHorizonOk() (*int32, bool) {
+	if o == nil || IsNil(o.SoftHorizon) {
+		return nil, false
+	}
+	return o.SoftHorizon, true
+}
+
+// HasSoftHorizon returns a boolean if a field has been set.
+func (o *ForecastRequestV1) HasSoftHorizon() bool {
+	if o != nil && !IsNil(o.SoftHorizon) {
+		return true
+	}
+
+	return false
+}
+
+// SetSoftHorizon gets a reference to the given int32 and assigns it to the SoftHorizon field.
+func (o *ForecastRequestV1) SetSoftHorizon(v int32) {
+	o.SoftHorizon = &v
 }
 
 // GetStrictlyPositive returns the StrictlyPositive field value if set, zero value otherwise.
@@ -325,9 +366,14 @@ func (o ForecastRequestV1) ToMap() (map[string]interface{}, error) {
 		toSerialize["filters"] = o.Filters
 	}
 	toSerialize["frequency"] = o.Frequency
-	toSerialize["horizon"] = o.Horizon
+	if !IsNil(o.HardHorizon) {
+		toSerialize["hard_horizon"] = o.HardHorizon
+	}
 	toSerialize["pipeline_version"] = o.PipelineVersion
 	toSerialize["recency_factor"] = o.RecencyFactor
+	if !IsNil(o.SoftHorizon) {
+		toSerialize["soft_horizon"] = o.SoftHorizon
+	}
 	if !IsNil(o.StrictlyPositive) {
 		toSerialize["strictly_positive"] = o.StrictlyPositive
 	}
@@ -342,7 +388,6 @@ func (o *ForecastRequestV1) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"frequency",
-		"horizon",
 		"pipeline_version",
 		"recency_factor",
 		"timeseries",

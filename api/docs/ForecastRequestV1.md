@@ -5,11 +5,12 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Backtest** | Pointer to **bool** | When true, run a backtest evaluation alongside the forecast. | [optional] 
-**Filters** | Pointer to [**Filters**](Filters.md) | Optional. Each **&#x60;categories[]&#x60;** and **&#x60;regions[]&#x60;** entry must be an integer **1–9999** (inclusive). Optional **&#x60;limit&#x60;** is **0–1000**. Values are not verified against catalog APIs.  | [optional] 
+**Filters** | Pointer to [**Filters**](Filters.md) | Optional. Each **&#x60;categories[]&#x60;** and **&#x60;regions[]&#x60;** entry must be an integer **1–9999** (inclusive). Optional **&#x60;limit&#x60;** is **0–10000**. Values are not verified against catalog APIs.  | [optional] 
 **Frequency** | **string** | Series cadence. Only \&quot;monthly\&quot; is currently supported; \&quot;daily\&quot; and \&quot;weekly\&quot; are reserved. | 
-**Horizon** | **int32** | Number of forecast steps to produce. | 
+**HardHorizon** | Pointer to **int32** | Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the pipeline falls back to a driverless forecast at &#x60;soft_horizon&#x60; if no quality run succeeds. When still failing at &#x60;hard_horizon&#x60;, the pipeline emits a driverless forecast at that horizon. At least one of &#x60;soft_horizon&#x60; or &#x60;hard_horizon&#x60; must be present. When both are set, &#x60;hard_horizon&#x60; must be less than or equal to &#x60;soft_horizon&#x60;. Maximum 12.  | [optional] 
 **PipelineVersion** | **string** | Pipeline version. Closed set; no aliases or \&quot;latest\&quot; resolution. Only v1 is supported today. | 
 **RecencyFactor** | **float64** |  | 
+**SoftHorizon** | Pointer to **int32** | Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month until it reaches &#x60;hard_horizon&#x60; (when set) while seeking a quality forecast. At least one of &#x60;soft_horizon&#x60; or &#x60;hard_horizon&#x60; must be present. When both are set, &#x60;hard_horizon&#x60; must be less than or equal to &#x60;soft_horizon&#x60;. Maximum 12.  | [optional] 
 **StrictlyPositive** | Pointer to **bool** | When true, every value in &#x60;timeseries&#x60; must be &#x60;&gt;&#x3D; 0&#x60; (zero is allowed); a single negative observation rejects the request with 422. The downstream forecasting pipeline (PPL) also clamps the produced forecast at zero so no output point can be negative. Defaults to false, in which case no positivity constraint is applied to inputs or outputs and negative values are returned unchanged. Optional.  | [optional] [default to false]
 **Timeseries** | **map[string]float32** | Map of YYYY-MM-DD date keys to numeric observation values. Must contain at least 60 points (5 years of monthly history) and be aligned to the declared frequency. | 
 **TimeseriesMetadata** | [**TimeseriesMetadata**](TimeseriesMetadata.md) |  | 
@@ -18,7 +19,7 @@ Name | Type | Description | Notes
 
 ### NewForecastRequestV1
 
-`func NewForecastRequestV1(frequency string, horizon int32, pipelineVersion string, recencyFactor float64, timeseries map[string]float32, timeseriesMetadata TimeseriesMetadata, ) *ForecastRequestV1`
+`func NewForecastRequestV1(frequency string, pipelineVersion string, recencyFactor float64, timeseries map[string]float32, timeseriesMetadata TimeseriesMetadata, ) *ForecastRequestV1`
 
 NewForecastRequestV1 instantiates a new ForecastRequestV1 object
 This constructor will assign default values to properties that have it defined,
@@ -103,25 +104,30 @@ and a boolean to check if the value has been set.
 SetFrequency sets Frequency field to given value.
 
 
-### GetHorizon
+### GetHardHorizon
 
-`func (o *ForecastRequestV1) GetHorizon() int32`
+`func (o *ForecastRequestV1) GetHardHorizon() int32`
 
-GetHorizon returns the Horizon field if non-nil, zero value otherwise.
+GetHardHorizon returns the HardHorizon field if non-nil, zero value otherwise.
 
-### GetHorizonOk
+### GetHardHorizonOk
 
-`func (o *ForecastRequestV1) GetHorizonOk() (*int32, bool)`
+`func (o *ForecastRequestV1) GetHardHorizonOk() (*int32, bool)`
 
-GetHorizonOk returns a tuple with the Horizon field if it's non-nil, zero value otherwise
+GetHardHorizonOk returns a tuple with the HardHorizon field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetHorizon
+### SetHardHorizon
 
-`func (o *ForecastRequestV1) SetHorizon(v int32)`
+`func (o *ForecastRequestV1) SetHardHorizon(v int32)`
 
-SetHorizon sets Horizon field to given value.
+SetHardHorizon sets HardHorizon field to given value.
 
+### HasHardHorizon
+
+`func (o *ForecastRequestV1) HasHardHorizon() bool`
+
+HasHardHorizon returns a boolean if a field has been set.
 
 ### GetPipelineVersion
 
@@ -162,6 +168,31 @@ and a boolean to check if the value has been set.
 
 SetRecencyFactor sets RecencyFactor field to given value.
 
+
+### GetSoftHorizon
+
+`func (o *ForecastRequestV1) GetSoftHorizon() int32`
+
+GetSoftHorizon returns the SoftHorizon field if non-nil, zero value otherwise.
+
+### GetSoftHorizonOk
+
+`func (o *ForecastRequestV1) GetSoftHorizonOk() (*int32, bool)`
+
+GetSoftHorizonOk returns a tuple with the SoftHorizon field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSoftHorizon
+
+`func (o *ForecastRequestV1) SetSoftHorizon(v int32)`
+
+SetSoftHorizon sets SoftHorizon field to given value.
+
+### HasSoftHorizon
+
+`func (o *ForecastRequestV1) HasSoftHorizon() bool`
+
+HasSoftHorizon returns a boolean if a field has been set.
 
 ### GetStrictlyPositive
 
