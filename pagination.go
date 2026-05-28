@@ -10,15 +10,15 @@ import (
 type UsagePageFunc func(ctx context.Context, page *api.ApiV1UsageGet200Response) (continueNext bool, err error)
 
 // ForEachUsagePage walks usage from page 1 until the callback returns false or pages are exhausted.
-func ForEachUsagePage(ctx context.Context, defaultAPI *api.DefaultAPIService, sort string, order string, limit int32, fn UsagePageFunc) error {
+func (c *Client) ForEachUsagePage(ctx context.Context, sort string, order string, limit int32, fn UsagePageFunc) error {
 	if limit <= 0 {
 		limit = 50
 	}
 	page := int32(1)
 	for {
-		resp, _, err := defaultAPI.ApiV1UsageGet(ctx).Page(page).Limit(limit).Sort(sort).Order(order).Execute()
+		resp, _, err := c.raw.DefaultAPI.ApiV1UsageGet(ctx).Page(page).Limit(limit).Sort(sort).Order(order).Execute()
 		if err != nil {
-			return err
+			return parseAPIError(err)
 		}
 		cont, err := fn(ctx, resp)
 		if err != nil {
@@ -39,15 +39,15 @@ func ForEachUsagePage(ctx context.Context, defaultAPI *api.DefaultAPIService, so
 type JobsPageFunc func(ctx context.Context, page *api.ApiV1JobsGet200Response) (continueNext bool, err error)
 
 // ForEachJobsPage walks job pages from page 1 until the callback returns false or pages are exhausted.
-func ForEachJobsPage(ctx context.Context, defaultAPI *api.DefaultAPIService, sort string, order string, limit int32, fn JobsPageFunc) error {
+func (c *Client) ForEachJobsPage(ctx context.Context, sort string, order string, limit int32, fn JobsPageFunc) error {
 	if limit <= 0 {
 		limit = 50
 	}
 	page := int32(1)
 	for {
-		resp, _, err := defaultAPI.ApiV1JobsGet(ctx).Page(page).Limit(limit).Sort(sort).Order(order).Execute()
+		resp, _, err := c.raw.DefaultAPI.ApiV1JobsGet(ctx).Page(page).Limit(limit).Sort(sort).Order(order).Execute()
 		if err != nil {
-			return err
+			return parseAPIError(err)
 		}
 		cont, err := fn(ctx, resp)
 		if err != nil {
