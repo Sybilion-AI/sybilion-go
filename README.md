@@ -65,7 +65,7 @@ For LLM / codegen contexts the single-file cheat sheet lives at [`LLM_SDK_GUIDE.
 
 - Email — [support@sybilion.com](mailto:support@sybilion.com)
 - Slack — [Sybilion Community](https://join.slack.com/t/sybilioncommunity/shared_invite/zt-3y6vx56nk-WJu35eLxkyFQr~Yfko6RjQ)
-- Discord — [Sybilion Developers Community](https://discord.gg/7xXcmuez)
+- Discord — [Sybilion Developers Community](https://discord.gg/KMDyXBdQ8c)
 
 ## License
 

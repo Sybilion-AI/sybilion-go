@@ -8,14 +8,14 @@ import (
 )
 
 // WaitForecast polls GET /api/v1/forecasts/{id} until the job is settled or the context is done.
-func WaitForecast(ctx context.Context, defaultAPI *api.DefaultAPIService, jobID string, poll time.Duration) (*api.ApiV1ForecastsIdGet200Response, error) {
+func (c *Client) WaitForecast(ctx context.Context, jobID string, poll time.Duration) (*api.ApiV1ForecastsIdGet200Response, error) {
 	if poll <= 0 {
 		poll = 2 * time.Second
 	}
 	t := time.NewTicker(poll)
 	defer t.Stop()
 	for {
-		j, _, err := defaultAPI.ApiV1ForecastsIdGet(ctx, jobID).Execute()
+		j, err := c.GetForecast(ctx, jobID)
 		if err != nil {
 			return nil, err
 		}

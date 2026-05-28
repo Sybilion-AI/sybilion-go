@@ -2,7 +2,7 @@
 
 Go modules are not "published" anywhere — they are discovered by the Go module proxy on the first `go get`, which clones the repo at the requested git tag. So a release for this SDK is:
 
-1. The repo is **publicly clonable** at `https://github.com/Mir-Insight/developers-portal-api-sdk-go`.
+1. The repo is **publicly clonable** at `https://github.com/Sybilion-AI/developers-portal-api-sdk-go`.
 2. The vanity URL `go.sybilion.dev/sybilion` resolves via the static page in [`vanity/`](./vanity/) and points the toolchain at that repo.
 3. A semver git tag (`vMAJOR.MINOR.PATCH`) on the default branch defines the version.
 
@@ -10,11 +10,11 @@ Go modules are not "published" anywhere — they are discovered by the Go module
 
 ### 1. The repo is public
 
-Confirmed already — `gh repo view Mir-Insight/developers-portal-api-sdk-go --json visibility` returns `"PUBLIC"`. If you ever need to flip back, both vanity URL resolution and `go get` will break.
+Confirmed already — `gh repo view Sybilion-AI/developers-portal-api-sdk-go --json visibility` returns `"PUBLIC"`. If you ever need to flip back, both vanity URL resolution and `go get` will break.
 
 ### 2. (Optional) Rename the repo to `sybilion-go`
 
-Cosmetic but matches the package name. **Settings -> Rename repository -> `sybilion-go`**. GitHub keeps the old URL as a permanent redirect, so the vanity meta tag continues to work even before you re-deploy. After the rename, update [`vanity/index.html`](./vanity/index.html) and re-deploy the vanity page so its `<meta name="go-import">` and `<meta name="go-source">` tags point at `https://github.com/Mir-Insight/sybilion-go`.
+Cosmetic but matches the package name. **Settings -> Rename repository -> `sybilion-go`**. GitHub keeps the old URL as a permanent redirect, so the vanity meta tag continues to work even before you re-deploy. After the rename, update [`vanity/index.html`](./vanity/index.html) and re-deploy the vanity page so its `<meta name="go-import">` and `<meta name="go-source">` tags point at `https://github.com/Sybilion-AI/sybilion-go`.
 
 ### 3. Add DNS for `go.sybilion.dev`
 
@@ -35,7 +35,7 @@ Then in the Cloudflare dashboard set `go.sybilion.dev` as the project's custom d
 ```bash
 curl 'https://go.sybilion.dev/sybilion?go-get=1' | grep go-import
 # Expected:
-# <meta name="go-import" content="go.sybilion.dev/sybilion git https://github.com/Mir-Insight/developers-portal-api-sdk-go" />
+# <meta name="go-import" content="go.sybilion.dev/sybilion git https://github.com/Sybilion-AI/developers-portal-api-sdk-go" />
 
 GOPROXY=direct go install go.sybilion.dev/sybilion@latest 2>&1 | head
 # Should attempt a fetch (will report a real error only if no tag exists yet).

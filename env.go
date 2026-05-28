@@ -9,6 +9,9 @@ import (
 // compiled-in default API origin when Options.BaseURL is empty.
 const EnvSybilionAPIBaseURL = "SYBILION_API_BASE_URL"
 
+// EnvSybilionAPIToken is the environment variable read when Options.Token is empty.
+const EnvSybilionAPIToken = "SYBILION_API_TOKEN"
+
 func resolveAPIBaseURL(explicit string) string {
 	s := strings.TrimSuffix(strings.TrimSpace(explicit), "/")
 	if s != "" {
