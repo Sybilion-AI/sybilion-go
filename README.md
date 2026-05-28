@@ -17,22 +17,26 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"go.sybilion.dev/sybilion"
 )
 
 func main() {
-	c := sybilion.New(sybilion.Options{
-		Token: os.Getenv("SYBILION_API_TOKEN"),
-	})
+	// Token read from SYBILION_API_TOKEN env var automatically
+	c := sybilion.New(sybilion.Options{})
 
-	me, _, err := c.DefaultAPI().ApiV1MeGet(context.Background()).Execute()
+	me, err := c.Me(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println(me.GetUserId(), me.GetAvailableEurCents(), me.GetApiUsageTier())
 }
+```
+
+Or pass the token explicitly:
+
+```go
+c := sybilion.New(sybilion.Options{Token: "sk_ops_..."})
 ```
 
 The token is an API key (`sk_ops_...`) created in the Developers Portal, or a dashboard session token.
@@ -45,15 +49,31 @@ Resolution order:
 2. `SYBILION_API_BASE_URL` in the process environment (optional)
 3. Compiled default `https://api.sybilion.dev`
 
-The wrapper does not read the API token from the environment; pass `Options.Token` explicitly (often from `SYBILION_API_TOKEN` or your own secret store).
-
 ## What's in the box
 
-- `sybilion.Client` — Bearer auth, ergonomic helpers.
-- `c.Forecasts().Wait(ctx, jobID, poll)` — polls `GET /api/v1/forecasts/{id}` until settled.
-- `sybilion.ForEachUsagePage` / `ForEachJobsPage` — paginated iterators.
-- `c.DefaultAPI()` — escape hatch to the OpenAPI-generated client at `go.sybilion.dev/sybilion/api`.
-- `sybilion.AsGenericOpenAPIError(err)` — typed error unwrap.
+**Account**
+- `c.Me(ctx)` — authenticated account info (balance, tier).
+
+**Catalog**
+- `c.ListCategories(ctx)` / `c.ListRegions(ctx)` — available thematic categories and geographic regions.
+
+**Forecasts**
+- `c.SubmitForecast(ctx, req)` — submit an async forecast job.
+- `c.GetForecast(ctx, id)` — poll status of a forecast job.
+- `c.GetForecastArtifact(ctx, id, name)` — download a forecast artifact by name.
+- `c.Forecasts().Wait(ctx, jobID, poll)` — polls until the job is settled or context is done.
+
+**Drivers**
+- `c.GetDrivers(ctx, req)` — drivers ranked by explanatory power (synchronous, billed).
+
+**Alerts**
+- `c.GetAlerts(ctx, req)` — anomaly alerts for a timeseries (synchronous, billed).
+
+**Jobs & Usage**
+- `c.ForEachJobsPage(ctx, ...)` / `c.ForEachUsagePage(ctx, ...)` — paginated iterators.
+
+**Escape hatch**
+- `c.DefaultAPI()` — the OpenAPI-generated client at `go.sybilion.dev/sybilion/api`.
 
 ## Documentation
 

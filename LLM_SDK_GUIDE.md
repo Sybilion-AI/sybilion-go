@@ -9,13 +9,13 @@ Copy facts from this file; do not invent module paths, env names, or forecast sh
 ## Module path and dependency
 
 - **Module:** `go.sybilion.dev/sybilion`
-- **Wrapper package:** `package sybilion` at the module root (`sybilion.New`, `sybilion.Options`, `sybilion.AsGenericOpenAPIError`, ...)
+- **Wrapper package:** `package sybilion` at the module root (`sybilion.New`, `sybilion.Options`, ...)
 - **Generated low-level client:** `package sybilionapi` at `go.sybilion.dev/sybilion/api`
 
 Prefer a **versioned** dependency from the module proxy:
 
 ```bash
-go get go.sybilion.dev/sybilion@v0.1.0
+go get go.sybilion.dev/sybilion@v0.1.3
 ```
 
 For local development without publishing, use **`replace`** in the app `go.mod`:
@@ -32,7 +32,7 @@ replace go.sybilion.dev/sybilion => /absolute/path/to/sybilion-go
 
 | Variable | Required | Role |
 |----------|----------|------|
-| `SYBILION_API_TOKEN` | Yes for real calls | Bearer token: API key `sk_ops_...` or a dashboard session token. Read in your app and pass `sybilion.Options{Token: ...}`. The wrapper does **not** read this env var by itself. |
+| `SYBILION_API_TOKEN` | Yes for real calls | Bearer token: API key `sk_ops_...` or a dashboard session token. When `Options.Token` is empty, `sybilion.New` reads this env var automatically. |
 | `SYBILION_API_BASE_URL` | No | When `Options.BaseURL` is empty, `sybilion.New` reads this env var, then the compiled default `sybilion.DefaultPublicAPIBaseURL`. Resolution order: non-empty `Options.BaseURL`, else `SYBILION_API_BASE_URL`, else default. |
 
 ## Default API origin
@@ -47,16 +47,14 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 
 	"go.sybilion.dev/sybilion"
 )
 
 func main() {
-	c := sybilion.New(sybilion.Options{
-		Token: os.Getenv("SYBILION_API_TOKEN"),
-	})
-	me, _, err := c.DefaultAPI().ApiV1MeGet(context.Background()).Execute()
+	// Token read from SYBILION_API_TOKEN env var automatically
+	c := sybilion.New(sybilion.Options{})
+	me, err := c.Me(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,7 +72,6 @@ package main
 import (
 	"context"
 	"log"
-	"os"
 	"time"
 
 	"go.sybilion.dev/sybilion"
@@ -83,9 +80,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	c := sybilion.New(sybilion.Options{
-		Token: os.Getenv("SYBILION_API_TOKEN"),
-	})
+	c := sybilion.New(sybilion.Options{})
 
 	meta := api.NewTimeseriesMetadata("Synthetic monthly demo series")
 	ts := make(map[string]float32)
@@ -96,7 +91,7 @@ func main() {
 	}
 
 	req := api.NewForecastRequestV1("v1", 6, "monthly", 0.5, *meta, ts)
-	acc, _, err := c.DefaultAPI().ApiV1ForecastsPost(ctx).ForecastRequestV1(*req).Execute()
+	acc, err := c.SubmitForecast(ctx, *req)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -109,17 +104,33 @@ func main() {
 }
 ```
 
-## Errors (`GenericOpenAPIError`)
-
-The generated client returns `*sybilionapi.GenericOpenAPIError` for many failures. Prefer **`errors.As`** or the helper **`sybilion.AsGenericOpenAPIError(err)`** (see `errors.go`).
+## Alerts
 
 ```go
-if ge, ok := sybilion.AsGenericOpenAPIError(err); ok {
-	log.Printf("openapi error: %s body=%s", ge.Error(), string(ge.Body()))
-	return
+alerts, err := c.GetAlerts(ctx, sybilion.AlertsRequest{
+	Metadata:        api.TimeseriesMetadata{Title: "Monthly Brent Crude Oil Price Index"},
+	ContextEnriched: false,
+})
+if err != nil {
+	log.Fatal(err)
 }
-log.Fatal(err)
+for _, a := range alerts {
+	log.Printf("alert: %s pct_change=%.2f", a.Name, a.PctChange)
+}
 ```
+
+## Errors
+
+Non-2xx responses are returned as plain `error` values. The wrapper parses the `error` field from the JSON response body when available:
+
+```go
+me, err := c.Me(ctx)
+if err != nil {
+	log.Fatal(err) // e.g. "invalid token"
+}
+```
+
+For advanced inspection of the raw generated error use `errors.As` against `*sybilionapi.GenericOpenAPIError` via `c.DefaultAPI()` calls directly.
 
 ## Other languages
 
