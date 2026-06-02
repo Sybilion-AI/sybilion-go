@@ -12,6 +12,7 @@ package sybilionapi
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // checks if the ApiV1ForecastsIdGet200Response type satisfies the MappedNullable interface at compile time
@@ -20,11 +21,21 @@ var _ MappedNullable = &ApiV1ForecastsIdGet200Response{}
 // ApiV1ForecastsIdGet200Response struct for ApiV1ForecastsIdGet200Response
 type ApiV1ForecastsIdGet200Response struct {
 	Artifacts []ForecastArtifactMeta `json:"artifacts,omitempty"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	// Final settled charge for the job, in EUR cents. Null until settled.
+	EurCentsFinal NullableInt64 `json:"eur_cents_final,omitempty"`
 	JobId *string `json:"job_id,omitempty"`
 	// Present for some settled failed or canceled jobs when the pipeline wrote `error.json` under `forecasts/{id}/` or `forecasts/{id}/output/` in the artifact bucket. Shape is defined by the pipeline; omitted when missing or unreadable (bodies larger than 64 KiB are omitted). May be a JSON object or array depending on the pipeline. 
 	PipelineError map[string]interface{} `json:"pipeline_error,omitempty"`
+	// Today only \"forecast\"; future pipeline types will appear here.
+	PipelineType *string `json:"pipeline_type,omitempty"`
+	// Internal run id (omitted for jobs that haven't started yet).
+	RunId NullableString `json:"run_id,omitempty"`
 	Settled *bool `json:"settled,omitempty"`
+	SettledAt NullableTime `json:"settled_at,omitempty"`
 	Status *string `json:"status,omitempty"`
+	// Internal workflow id (omitted for jobs that haven't started yet).
+	WorkflowId NullableString `json:"workflow_id,omitempty"`
 }
 
 // NewApiV1ForecastsIdGet200Response instantiates a new ApiV1ForecastsIdGet200Response object
@@ -74,6 +85,80 @@ func (o *ApiV1ForecastsIdGet200Response) HasArtifacts() bool {
 // SetArtifacts gets a reference to the given []ForecastArtifactMeta and assigns it to the Artifacts field.
 func (o *ApiV1ForecastsIdGet200Response) SetArtifacts(v []ForecastArtifactMeta) {
 	o.Artifacts = v
+}
+
+// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+func (o *ApiV1ForecastsIdGet200Response) GetCreatedAt() time.Time {
+	if o == nil || IsNil(o.CreatedAt) {
+		var ret time.Time
+		return ret
+	}
+	return *o.CreatedAt
+}
+
+// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApiV1ForecastsIdGet200Response) GetCreatedAtOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.CreatedAt) {
+		return nil, false
+	}
+	return o.CreatedAt, true
+}
+
+// HasCreatedAt returns a boolean if a field has been set.
+func (o *ApiV1ForecastsIdGet200Response) HasCreatedAt() bool {
+	if o != nil && !IsNil(o.CreatedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreatedAt gets a reference to the given time.Time and assigns it to the CreatedAt field.
+func (o *ApiV1ForecastsIdGet200Response) SetCreatedAt(v time.Time) {
+	o.CreatedAt = &v
+}
+
+// GetEurCentsFinal returns the EurCentsFinal field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ApiV1ForecastsIdGet200Response) GetEurCentsFinal() int64 {
+	if o == nil || IsNil(o.EurCentsFinal.Get()) {
+		var ret int64
+		return ret
+	}
+	return *o.EurCentsFinal.Get()
+}
+
+// GetEurCentsFinalOk returns a tuple with the EurCentsFinal field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApiV1ForecastsIdGet200Response) GetEurCentsFinalOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.EurCentsFinal.Get(), o.EurCentsFinal.IsSet()
+}
+
+// HasEurCentsFinal returns a boolean if a field has been set.
+func (o *ApiV1ForecastsIdGet200Response) HasEurCentsFinal() bool {
+	if o != nil && o.EurCentsFinal.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetEurCentsFinal gets a reference to the given NullableInt64 and assigns it to the EurCentsFinal field.
+func (o *ApiV1ForecastsIdGet200Response) SetEurCentsFinal(v int64) {
+	o.EurCentsFinal.Set(&v)
+}
+// SetEurCentsFinalNil sets the value for EurCentsFinal to be an explicit nil
+func (o *ApiV1ForecastsIdGet200Response) SetEurCentsFinalNil() {
+	o.EurCentsFinal.Set(nil)
+}
+
+// UnsetEurCentsFinal ensures that no value is present for EurCentsFinal, not even an explicit nil
+func (o *ApiV1ForecastsIdGet200Response) UnsetEurCentsFinal() {
+	o.EurCentsFinal.Unset()
 }
 
 // GetJobId returns the JobId field value if set, zero value otherwise.
@@ -141,6 +226,80 @@ func (o *ApiV1ForecastsIdGet200Response) SetPipelineError(v map[string]interface
 	o.PipelineError = v
 }
 
+// GetPipelineType returns the PipelineType field value if set, zero value otherwise.
+func (o *ApiV1ForecastsIdGet200Response) GetPipelineType() string {
+	if o == nil || IsNil(o.PipelineType) {
+		var ret string
+		return ret
+	}
+	return *o.PipelineType
+}
+
+// GetPipelineTypeOk returns a tuple with the PipelineType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApiV1ForecastsIdGet200Response) GetPipelineTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PipelineType) {
+		return nil, false
+	}
+	return o.PipelineType, true
+}
+
+// HasPipelineType returns a boolean if a field has been set.
+func (o *ApiV1ForecastsIdGet200Response) HasPipelineType() bool {
+	if o != nil && !IsNil(o.PipelineType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPipelineType gets a reference to the given string and assigns it to the PipelineType field.
+func (o *ApiV1ForecastsIdGet200Response) SetPipelineType(v string) {
+	o.PipelineType = &v
+}
+
+// GetRunId returns the RunId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ApiV1ForecastsIdGet200Response) GetRunId() string {
+	if o == nil || IsNil(o.RunId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.RunId.Get()
+}
+
+// GetRunIdOk returns a tuple with the RunId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApiV1ForecastsIdGet200Response) GetRunIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RunId.Get(), o.RunId.IsSet()
+}
+
+// HasRunId returns a boolean if a field has been set.
+func (o *ApiV1ForecastsIdGet200Response) HasRunId() bool {
+	if o != nil && o.RunId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRunId gets a reference to the given NullableString and assigns it to the RunId field.
+func (o *ApiV1ForecastsIdGet200Response) SetRunId(v string) {
+	o.RunId.Set(&v)
+}
+// SetRunIdNil sets the value for RunId to be an explicit nil
+func (o *ApiV1ForecastsIdGet200Response) SetRunIdNil() {
+	o.RunId.Set(nil)
+}
+
+// UnsetRunId ensures that no value is present for RunId, not even an explicit nil
+func (o *ApiV1ForecastsIdGet200Response) UnsetRunId() {
+	o.RunId.Unset()
+}
+
 // GetSettled returns the Settled field value if set, zero value otherwise.
 func (o *ApiV1ForecastsIdGet200Response) GetSettled() bool {
 	if o == nil || IsNil(o.Settled) {
@@ -171,6 +330,48 @@ func (o *ApiV1ForecastsIdGet200Response) HasSettled() bool {
 // SetSettled gets a reference to the given bool and assigns it to the Settled field.
 func (o *ApiV1ForecastsIdGet200Response) SetSettled(v bool) {
 	o.Settled = &v
+}
+
+// GetSettledAt returns the SettledAt field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ApiV1ForecastsIdGet200Response) GetSettledAt() time.Time {
+	if o == nil || IsNil(o.SettledAt.Get()) {
+		var ret time.Time
+		return ret
+	}
+	return *o.SettledAt.Get()
+}
+
+// GetSettledAtOk returns a tuple with the SettledAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApiV1ForecastsIdGet200Response) GetSettledAtOk() (*time.Time, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SettledAt.Get(), o.SettledAt.IsSet()
+}
+
+// HasSettledAt returns a boolean if a field has been set.
+func (o *ApiV1ForecastsIdGet200Response) HasSettledAt() bool {
+	if o != nil && o.SettledAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSettledAt gets a reference to the given NullableTime and assigns it to the SettledAt field.
+func (o *ApiV1ForecastsIdGet200Response) SetSettledAt(v time.Time) {
+	o.SettledAt.Set(&v)
+}
+// SetSettledAtNil sets the value for SettledAt to be an explicit nil
+func (o *ApiV1ForecastsIdGet200Response) SetSettledAtNil() {
+	o.SettledAt.Set(nil)
+}
+
+// UnsetSettledAt ensures that no value is present for SettledAt, not even an explicit nil
+func (o *ApiV1ForecastsIdGet200Response) UnsetSettledAt() {
+	o.SettledAt.Unset()
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
@@ -205,6 +406,48 @@ func (o *ApiV1ForecastsIdGet200Response) SetStatus(v string) {
 	o.Status = &v
 }
 
+// GetWorkflowId returns the WorkflowId field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ApiV1ForecastsIdGet200Response) GetWorkflowId() string {
+	if o == nil || IsNil(o.WorkflowId.Get()) {
+		var ret string
+		return ret
+	}
+	return *o.WorkflowId.Get()
+}
+
+// GetWorkflowIdOk returns a tuple with the WorkflowId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApiV1ForecastsIdGet200Response) GetWorkflowIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.WorkflowId.Get(), o.WorkflowId.IsSet()
+}
+
+// HasWorkflowId returns a boolean if a field has been set.
+func (o *ApiV1ForecastsIdGet200Response) HasWorkflowId() bool {
+	if o != nil && o.WorkflowId.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetWorkflowId gets a reference to the given NullableString and assigns it to the WorkflowId field.
+func (o *ApiV1ForecastsIdGet200Response) SetWorkflowId(v string) {
+	o.WorkflowId.Set(&v)
+}
+// SetWorkflowIdNil sets the value for WorkflowId to be an explicit nil
+func (o *ApiV1ForecastsIdGet200Response) SetWorkflowIdNil() {
+	o.WorkflowId.Set(nil)
+}
+
+// UnsetWorkflowId ensures that no value is present for WorkflowId, not even an explicit nil
+func (o *ApiV1ForecastsIdGet200Response) UnsetWorkflowId() {
+	o.WorkflowId.Unset()
+}
+
 func (o ApiV1ForecastsIdGet200Response) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -218,17 +461,35 @@ func (o ApiV1ForecastsIdGet200Response) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.Artifacts) {
 		toSerialize["artifacts"] = o.Artifacts
 	}
+	if !IsNil(o.CreatedAt) {
+		toSerialize["created_at"] = o.CreatedAt
+	}
+	if o.EurCentsFinal.IsSet() {
+		toSerialize["eur_cents_final"] = o.EurCentsFinal.Get()
+	}
 	if !IsNil(o.JobId) {
 		toSerialize["job_id"] = o.JobId
 	}
 	if o.PipelineError != nil {
 		toSerialize["pipeline_error"] = o.PipelineError
 	}
+	if !IsNil(o.PipelineType) {
+		toSerialize["pipeline_type"] = o.PipelineType
+	}
+	if o.RunId.IsSet() {
+		toSerialize["run_id"] = o.RunId.Get()
+	}
 	if !IsNil(o.Settled) {
 		toSerialize["settled"] = o.Settled
 	}
+	if o.SettledAt.IsSet() {
+		toSerialize["settled_at"] = o.SettledAt.Get()
+	}
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
+	}
+	if o.WorkflowId.IsSet() {
+		toSerialize["workflow_id"] = o.WorkflowId.Get()
 	}
 	return toSerialize, nil
 }

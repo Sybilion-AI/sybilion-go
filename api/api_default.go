@@ -891,23 +891,20 @@ type ApiApiV1RegionsGetRequest struct {
 	ApiService *DefaultAPIService
 }
 
-func (r ApiApiV1RegionsGetRequest) Execute() (*CatalogListResponse, *http.Response, error) {
+func (r ApiApiV1RegionsGetRequest) Execute() (*RegionListResponse, *http.Response, error) {
 	return r.ApiService.ApiV1RegionsGetExecute(r)
 }
 
 /*
-ApiV1RegionsGet List regions
+ApiV1RegionsGet List available geographic regions
 
-Returns the full **regions** dimension as JSON with an `items` array. Each item
-includes a numeric `id` plus the fields available for that region.
+Returns the full list of geographic regions available for filtering forecasts,
+driver searches, and alert detection. Use the `id` value from each entry
+in the `filters.regions` field of your requests.
 
-**Discovery only:** the API does **not** validate `filters.regions` on
-`POST /api/v1/forecasts` or `POST /api/v1/drivers` against this listing — those
-endpoints keep their existing integer rules (see the `Filters` schema). Use this
-listing to pick valid identifiers for your own integration.
-
-Requires the same `Authorization: Bearer` as other `/api/v1` routes. Returns
-**503** when the dimensions backend is not enabled for your account.
+This is a discovery endpoint — region ids are **not** validated on submit,
+so you can filter by any integer in 1–9999, but this listing shows the ones
+that actually exist in the catalog.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -921,13 +918,13 @@ func (a *DefaultAPIService) ApiV1RegionsGet(ctx context.Context) ApiApiV1Regions
 }
 
 // Execute executes the request
-//  @return CatalogListResponse
-func (a *DefaultAPIService) ApiV1RegionsGetExecute(r ApiApiV1RegionsGetRequest) (*CatalogListResponse, *http.Response, error) {
+//  @return RegionListResponse
+func (a *DefaultAPIService) ApiV1RegionsGetExecute(r ApiApiV1RegionsGetRequest) (*RegionListResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *CatalogListResponse
+		localVarReturnValue  *RegionListResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DefaultAPIService.ApiV1RegionsGet")
@@ -1178,7 +1175,7 @@ type ApiHealthGetRequest struct {
 	ApiService *DefaultAPIService
 }
 
-func (r ApiHealthGetRequest) Execute() (map[string]interface{}, *http.Response, error) {
+func (r ApiHealthGetRequest) Execute() (*HealthResponse, *http.Response, error) {
 	return r.ApiService.HealthGetExecute(r)
 }
 
@@ -1196,13 +1193,13 @@ func (a *DefaultAPIService) HealthGet(ctx context.Context) ApiHealthGetRequest {
 }
 
 // Execute executes the request
-//  @return map[string]interface{}
-func (a *DefaultAPIService) HealthGetExecute(r ApiHealthGetRequest) (map[string]interface{}, *http.Response, error) {
+//  @return HealthResponse
+func (a *DefaultAPIService) HealthGetExecute(r ApiHealthGetRequest) (*HealthResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  map[string]interface{}
+		localVarReturnValue  *HealthResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DefaultAPIService.HealthGet")
@@ -1256,7 +1253,7 @@ func (a *DefaultAPIService) HealthGetExecute(r ApiHealthGetRequest) (map[string]
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 503 {
-			var v map[string]interface{}
+			var v HealthResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
