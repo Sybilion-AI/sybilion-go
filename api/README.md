@@ -88,7 +88,7 @@ Class | Method | HTTP request | Description
 *DefaultAPI* | [**ApiV1ForecastsPost**](docs/DefaultAPI.md#apiv1forecastspost) | **Post** /api/v1/forecasts | Start async forecast job
 *DefaultAPI* | [**ApiV1JobsGet**](docs/DefaultAPI.md#apiv1jobsget) | **Get** /api/v1/jobs | Paginated list of the caller&#39;s async jobs
 *DefaultAPI* | [**ApiV1MeGet**](docs/DefaultAPI.md#apiv1meget) | **Get** /api/v1/me | Current user, balances, and usage tier
-*DefaultAPI* | [**ApiV1RegionsGet**](docs/DefaultAPI.md#apiv1regionsget) | **Get** /api/v1/regions | List regions
+*DefaultAPI* | [**ApiV1RegionsGet**](docs/DefaultAPI.md#apiv1regionsget) | **Get** /api/v1/regions | List available geographic regions
 *DefaultAPI* | [**ApiV1UsageGet**](docs/DefaultAPI.md#apiv1usageget) | **Get** /api/v1/usage | Paginated usage (charged tasks)
 *DefaultAPI* | [**HealthGet**](docs/DefaultAPI.md#healthget) | **Get** /health | Health check
 
@@ -106,12 +106,15 @@ Class | Method | HTTP request | Description
  - [Filters](docs/Filters.md)
  - [ForecastArtifactMeta](docs/ForecastArtifactMeta.md)
  - [ForecastRequestV1](docs/ForecastRequestV1.md)
+ - [HealthResponse](docs/HealthResponse.md)
  - [JobSummary](docs/JobSummary.md)
  - [JobsPagination](docs/JobsPagination.md)
  - [MeResponse](docs/MeResponse.md)
  - [MeResponseSignupTrial](docs/MeResponseSignupTrial.md)
  - [Pagination](docs/Pagination.md)
  - [RecommendRequestV1](docs/RecommendRequestV1.md)
+ - [RegionItemV1](docs/RegionItemV1.md)
+ - [RegionListResponse](docs/RegionListResponse.md)
  - [TimeseriesMetadata](docs/TimeseriesMetadata.md)
  - [UsageEvent](docs/UsageEvent.md)
  - [ValidationErrorResponse](docs/ValidationErrorResponse.md)

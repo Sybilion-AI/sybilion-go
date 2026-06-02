@@ -59,5 +59,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Renamed** module path from `github.com/Mir-Insight/developers-portal-api-sdk-go` to `go.sybilion.dev/sybilion` (pre-release rename; no prior published version).
+- **Renamed** module path from `github.com/Sybilion-AI/developers-portal-api-sdk-go` to `go.sybilion.dev/sybilion` (pre-release rename; no prior published version).
 - **Renamed** wrapper Go package from `devportalclient` to `sybilion` and the generated package from `devportal` (at `gen/`) to `sybilionapi` (at `api/`).

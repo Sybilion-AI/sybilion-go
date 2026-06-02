@@ -11,7 +11,7 @@ Method | HTTP request | Description
 [**ApiV1ForecastsPost**](DefaultAPI.md#ApiV1ForecastsPost) | **Post** /api/v1/forecasts | Start async forecast job
 [**ApiV1JobsGet**](DefaultAPI.md#ApiV1JobsGet) | **Get** /api/v1/jobs | Paginated list of the caller&#39;s async jobs
 [**ApiV1MeGet**](DefaultAPI.md#ApiV1MeGet) | **Get** /api/v1/me | Current user, balances, and usage tier
-[**ApiV1RegionsGet**](DefaultAPI.md#ApiV1RegionsGet) | **Get** /api/v1/regions | List regions
+[**ApiV1RegionsGet**](DefaultAPI.md#ApiV1RegionsGet) | **Get** /api/v1/regions | List available geographic regions
 [**ApiV1UsageGet**](DefaultAPI.md#ApiV1UsageGet) | **Get** /api/v1/usage | Paginated usage (charged tasks)
 [**HealthGet**](DefaultAPI.md#HealthGet) | **Get** /health | Health check
 
@@ -484,9 +484,9 @@ Other parameters are passed through a pointer to a apiApiV1MeGetRequest struct v
 
 ## ApiV1RegionsGet
 
-> CatalogListResponse ApiV1RegionsGet(ctx).Execute()
+> RegionListResponse ApiV1RegionsGet(ctx).Execute()
 
-List regions
+List available geographic regions
 
 
 
@@ -511,7 +511,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.ApiV1RegionsGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `ApiV1RegionsGet`: CatalogListResponse
+	// response from `ApiV1RegionsGet`: RegionListResponse
 	fmt.Fprintf(os.Stdout, "Response from `DefaultAPI.ApiV1RegionsGet`: %v\n", resp)
 }
 ```
@@ -527,7 +527,7 @@ Other parameters are passed through a pointer to a apiApiV1RegionsGetRequest str
 
 ### Return type
 
-[**CatalogListResponse**](CatalogListResponse.md)
+[**RegionListResponse**](RegionListResponse.md)
 
 ### Authorization
 
@@ -617,7 +617,7 @@ Name | Type | Description  | Notes
 
 ## HealthGet
 
-> map[string]interface{} HealthGet(ctx).Execute()
+> HealthResponse HealthGet(ctx).Execute()
 
 Health check
 
@@ -642,7 +642,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.HealthGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `HealthGet`: map[string]interface{}
+	// response from `HealthGet`: HealthResponse
 	fmt.Fprintf(os.Stdout, "Response from `DefaultAPI.HealthGet`: %v\n", resp)
 }
 ```
@@ -658,7 +658,7 @@ Other parameters are passed through a pointer to a apiHealthGetRequest struct vi
 
 ### Return type
 
-**map[string]interface{}**
+[**HealthResponse**](HealthResponse.md)
 
 ### Authorization
 

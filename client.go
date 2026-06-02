@@ -91,7 +91,7 @@ func (c *Client) ListCategories(ctx context.Context) (*api.CatalogListResponse, 
 }
 
 // ListRegions lists available geographic regions.
-func (c *Client) ListRegions(ctx context.Context) (*api.CatalogListResponse, error) {
+func (c *Client) ListRegions(ctx context.Context) (*api.RegionListResponse, error) {
 	resp, _, err := c.raw.DefaultAPI.ApiV1RegionsGet(ctx).Execute()
 	return resp, parseAPIError(err)
 }

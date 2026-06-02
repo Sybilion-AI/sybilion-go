@@ -113,6 +113,16 @@ components:
                         type: integer
                     type: array
             type: object
+        HealthResponse:
+            description: Health check response. Keys may expand over time.
+            additionalProperties: true
+            properties:
+                status:
+                    description: Overall system status.
+                    type: string
+            required:
+                - status
+            type: object
         ForecastArtifactMeta:
             properties:
                 content_type:
@@ -442,6 +452,40 @@ components:
                 - recency_factor
                 - timeseries_metadata
             type: object
+        RegionItemV1:
+            additionalProperties: true
+            description: A single geographic region returned by GET /api/v1/regions.
+            properties:
+                id:
+                    description: Integer identifier. Use this value in filters.regions[].
+                    type: integer
+                latitude:
+                    default: 0.0
+                    description: Geographic latitude (0.0 when not applicable).
+                    format: double
+                    type: number
+                longitude:
+                    default: 0.0
+                    description: Geographic longitude (0.0 when not applicable).
+                    format: double
+                    type: number
+                name:
+                    description: Human-readable region label.
+                    type: string
+            required:
+                - id
+                - name
+            type: object
+        RegionListResponse:
+            properties:
+                items:
+                    description: Complete region listing, sorted by id ascending. No pagination.
+                    items:
+                        $ref: '#/components/schemas/RegionItemV1'
+                    type: array
+            required:
+                - items
+            type: object
         TimeseriesMetadata:
             properties:
                 description:
@@ -681,6 +725,14 @@ paths:
                                         items:
                                             $ref: '#/components/schemas/ForecastArtifactMeta'
                                         type: array
+                                    created_at:
+                                        format: date-time
+                                        type: string
+                                    eur_cents_final:
+                                        description: Final settled charge for the job, in EUR cents. Null until settled.
+                                        format: int64
+                                        nullable: true
+                                        type: integer
                                     job_id:
                                         type: string
                                     pipeline_error:
@@ -693,8 +745,19 @@ paths:
                                             May be a JSON object or array depending on the pipeline.
                                         nullable: true
                                         type: object
+                                    pipeline_type:
+                                        description: Today only "forecast"; future pipeline types will appear here.
+                                        type: string
+                                    run_id:
+                                        description: Internal run id (omitted for jobs that haven't started yet).
+                                        nullable: true
+                                        type: string
                                     settled:
                                         type: boolean
+                                    settled_at:
+                                        format: date-time
+                                        nullable: true
+                                        type: string
                                     status:
                                         enum:
                                             - queued
@@ -702,6 +765,10 @@ paths:
                                             - completed
                                             - failed
                                             - canceled
+                                        type: string
+                                    workflow_id:
+                                        description: Internal workflow id (omitted for jobs that haven't started yet).
+                                        nullable: true
                                         type: string
                                 type: object
                     description: OK
@@ -848,23 +915,30 @@ paths:
     /api/v1/regions:
         get:
             description: |
-                Returns the full **regions** dimension as JSON with an `items` array. Each item
-                includes a numeric `id` plus the fields available for that region.
+                Returns the full list of geographic regions available for filtering forecasts,
+                driver searches, and alert detection. Use the `id` value from each entry
+                in the `filters.regions` field of your requests.
 
-                **Discovery only:** the API does **not** validate `filters.regions` on
-                `POST /api/v1/forecasts` or `POST /api/v1/drivers` against this listing — those
-                endpoints keep their existing integer rules (see the `Filters` schema). Use this
-                listing to pick valid identifiers for your own integration.
-
-                Requires the same `Authorization: Bearer` as other `/api/v1` routes. Returns
-                **503** when the dimensions backend is not enabled for your account.
+                This is a discovery endpoint — region ids are **not** validated on submit,
+                so you can filter by any integer in 1–9999, but this listing shows the ones
+                that actually exist in the catalog.
             responses:
                 "200":
                     content:
                         application/json:
+                            example:
+                                items:
+                                    - id: 42
+                                      name: "Europe"
+                                      latitude: 48.0
+                                      longitude: 10.0
+                                    - id: 88
+                                      name: "North America"
+                                      latitude: 40.0
+                                      longitude: -100.0
                             schema:
-                                $ref: '#/components/schemas/CatalogListResponse'
-                    description: OK
+                                $ref: '#/components/schemas/RegionListResponse'
+                    description: Full region listing, sorted by id ascending.
                 "401":
                     description: Unauthorized
                 "502":
@@ -881,7 +955,7 @@ paths:
                     description: Dimensions backend not enabled for this account
             security:
                 - bearerAuth: []
-            summary: List regions
+            summary: List available geographic regions
     /api/v1/usage:
         get:
             description: |
@@ -963,13 +1037,13 @@ paths:
                     content:
                         application/json:
                             schema:
-                                type: object
+                                $ref: '#/components/schemas/HealthResponse'
                     description: All components healthy (no component in `error`)
                 "503":
                     content:
                         application/json:
                             schema:
-                                type: object
+                                $ref: '#/components/schemas/HealthResponse'
                     description: Degraded — at least one component is in `error`
             summary: Health check
 servers:
