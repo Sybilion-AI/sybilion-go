@@ -12,32 +12,43 @@ paths:
   /api/v1/categories:
     get:
       description: |
-        Same contract as `/api/v1/regions`, but for **categories**. Full listing,
-        no pagination. **Discovery only** — not enforced on forecast or drivers submit.
+        Returns the full list of thematic categories available for filtering forecasts,
+        driver searches, and alert detection. Use the `id` values from this response
+        in the `filters.categories` field of your requests.
+
+        This is a discovery endpoint — category ids are **not** validated on submit,
+        so you can filter by any integer in 1–9999, but this listing shows the ones
+        that actually exist in the catalog.
       responses:
         "200":
           content:
             application/json:
+              example:
+                items:
+                - id: 3
+                  name: Energy
+                - id: 7
+                  name: Commodities
+                - id: 14
+                  name: Financials
               schema:
-                $ref: '#/components/schemas/CatalogListResponse'
-          description: OK
+                $ref: '#/components/schemas/CategoryListResponse'
+          description: "Full category listing, sorted by `id` ascending."
         "401":
-          description: Unauthorized
+          description: Missing or invalid bearer token.
         "502":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorMessage'
-          description: Dimensions backend error or unreachable
+          description: Catalog service error or unreachable.
         "503":
           content:
             application/json:
+              example:
+                error: Service Unavailable
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
-          description: Dimensions backend not enabled for this account
+          description: Service Unavailable
       security:
       - bearerAuth: []
-      summary: List categories
+      summary: List available thematic categories
   /api/v1/drivers:
     post:
       description: |
@@ -482,10 +493,6 @@ components:
       - target_eur_cents
       type: object
     CatalogListResponse:
-      example:
-        items:
-        - key: ""
-        - key: ""
       properties:
         items:
           description: |
@@ -495,6 +502,38 @@ components:
           items:
             additionalProperties: true
             type: object
+          type: array
+      required:
+      - items
+      type: object
+    CategoryItemV1:
+      description: A single thematic category returned by GET /api/v1/categories.
+      example:
+        name: name
+        id: 0
+      properties:
+        id:
+          description: "Integer identifier. Use this value in filters.categories[]."
+          type: integer
+        name:
+          description: Human-readable category label.
+          type: string
+      required:
+      - id
+      - name
+      type: object
+    CategoryListResponse:
+      example:
+        items:
+        - name: name
+          id: 0
+        - name: name
+          id: 0
+      properties:
+        items:
+          description: "Complete category listing, sorted by id ascending. No pagination."
+          items:
+            $ref: '#/components/schemas/CategoryItemV1'
           type: array
       required:
       - items

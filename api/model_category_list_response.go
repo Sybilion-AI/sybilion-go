@@ -1,7 +1,7 @@
 /*
 Sybilion API
 
-The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account and usage. Authenticate every request with `Authorization: Bearer <token>` using either an API key created in the Developers Portal or an Auth0 access token from your dashboard session.
+The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account and usage. Authenticate every request with `Authorization: Bearer <token>` using either an API key created in the Developers Portal or an Auth0 access token from your dashboard session. 
 
 API version: 0.1.0
 */
@@ -155,3 +155,5 @@ func (v *NullableCategoryListResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

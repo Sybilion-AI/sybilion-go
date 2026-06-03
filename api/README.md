@@ -81,7 +81,7 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultAPI* | [**ApiV1CategoriesGet**](docs/DefaultAPI.md#apiv1categoriesget) | **Get** /api/v1/categories | List categories
+*DefaultAPI* | [**ApiV1CategoriesGet**](docs/DefaultAPI.md#apiv1categoriesget) | **Get** /api/v1/categories | List available thematic categories
 *DefaultAPI* | [**ApiV1DriversPost**](docs/DefaultAPI.md#apiv1driverspost) | **Post** /api/v1/drivers | Recommend ranked driver-dataset candidates (synchronous proxy)
 *DefaultAPI* | [**ApiV1ForecastsIdArtifactsNameGet**](docs/DefaultAPI.md#apiv1forecastsidartifactsnameget) | **Get** /api/v1/forecasts/{id}/artifacts/{name} | Stream a single output file (proxied from internal artifact store; no gs:// URLs)
 *DefaultAPI* | [**ApiV1ForecastsIdGet**](docs/DefaultAPI.md#apiv1forecastsidget) | **Get** /api/v1/forecasts/{id} | Poll forecast job status and artifact metadata (downloads via artifacts sub-path)
@@ -101,6 +101,8 @@ Class | Method | HTTP request | Description
  - [ApiV1UsageGet200Response](docs/ApiV1UsageGet200Response.md)
  - [AutoRechargeState](docs/AutoRechargeState.md)
  - [CatalogListResponse](docs/CatalogListResponse.md)
+ - [CategoryItemV1](docs/CategoryItemV1.md)
+ - [CategoryListResponse](docs/CategoryListResponse.md)
  - [ErrorMessage](docs/ErrorMessage.md)
  - [EuroTranche](docs/EuroTranche.md)
  - [Filters](docs/Filters.md)
