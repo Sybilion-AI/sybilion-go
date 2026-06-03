@@ -85,7 +85,7 @@ func (c *Client) Me(ctx context.Context) (*api.MeResponse, error) {
 // ── Catalog ───────────────────────────────────────────────────────────────────
 
 // ListCategories lists available thematic categories.
-func (c *Client) ListCategories(ctx context.Context) (*api.CatalogListResponse, error) {
+func (c *Client) ListCategories(ctx context.Context) (*api.CategoryListResponse, error) {
 	resp, _, err := c.raw.DefaultAPI.ApiV1CategoriesGet(ctx).Execute()
 	return resp, parseAPIError(err)
 }

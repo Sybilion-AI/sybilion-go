@@ -4,7 +4,7 @@ All URIs are relative to *http://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**ApiV1CategoriesGet**](DefaultAPI.md#ApiV1CategoriesGet) | **Get** /api/v1/categories | List categories
+[**ApiV1CategoriesGet**](DefaultAPI.md#ApiV1CategoriesGet) | **Get** /api/v1/categories | List available thematic categories
 [**ApiV1DriversPost**](DefaultAPI.md#ApiV1DriversPost) | **Post** /api/v1/drivers | Recommend ranked driver-dataset candidates (synchronous proxy)
 [**ApiV1ForecastsIdArtifactsNameGet**](DefaultAPI.md#ApiV1ForecastsIdArtifactsNameGet) | **Get** /api/v1/forecasts/{id}/artifacts/{name} | Stream a single output file (proxied from internal artifact store; no gs:// URLs)
 [**ApiV1ForecastsIdGet**](DefaultAPI.md#ApiV1ForecastsIdGet) | **Get** /api/v1/forecasts/{id} | Poll forecast job status and artifact metadata (downloads via artifacts sub-path)
@@ -19,9 +19,9 @@ Method | HTTP request | Description
 
 ## ApiV1CategoriesGet
 
-> CatalogListResponse ApiV1CategoriesGet(ctx).Execute()
+> CategoryListResponse ApiV1CategoriesGet(ctx).Execute()
 
-List categories
+List available thematic categories
 
 
 
@@ -46,7 +46,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.ApiV1CategoriesGet``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
 	}
-	// response from `ApiV1CategoriesGet`: CatalogListResponse
+	// response from `ApiV1CategoriesGet`: CategoryListResponse
 	fmt.Fprintf(os.Stdout, "Response from `DefaultAPI.ApiV1CategoriesGet`: %v\n", resp)
 }
 ```
@@ -62,7 +62,7 @@ Other parameters are passed through a pointer to a apiApiV1CategoriesGetRequest 
 
 ### Return type
 
-[**CatalogListResponse**](CatalogListResponse.md)
+[**CategoryListResponse**](CategoryListResponse.md)
 
 ### Authorization
 

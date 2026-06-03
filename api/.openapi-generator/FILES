@@ -11,6 +11,8 @@ docs/ApiV1JobsGet200Response.md
 docs/ApiV1UsageGet200Response.md
 docs/AutoRechargeState.md
 docs/CatalogListResponse.md
+docs/CategoryItemV1.md
+docs/CategoryListResponse.md
 docs/DefaultAPI.md
 docs/ErrorMessage.md
 docs/EuroTranche.md
@@ -37,6 +39,8 @@ model__api_v1_jobs_get_200_response.go
 model__api_v1_usage_get_200_response.go
 model_auto_recharge_state.go
 model_catalog_list_response.go
+model_category_item_v1.go
+model_category_list_response.go
 model_error_message.go
 model_euro_tranche.go
 model_filters.go

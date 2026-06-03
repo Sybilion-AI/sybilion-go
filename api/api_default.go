@@ -29,15 +29,20 @@ type ApiApiV1CategoriesGetRequest struct {
 	ApiService *DefaultAPIService
 }
 
-func (r ApiApiV1CategoriesGetRequest) Execute() (*CatalogListResponse, *http.Response, error) {
+func (r ApiApiV1CategoriesGetRequest) Execute() (*CategoryListResponse, *http.Response, error) {
 	return r.ApiService.ApiV1CategoriesGetExecute(r)
 }
 
 /*
-ApiV1CategoriesGet List categories
+ApiV1CategoriesGet List available thematic categories
 
-Same contract as `/api/v1/regions`, but for **categories**. Full listing,
-no pagination. **Discovery only** — not enforced on forecast or drivers submit.
+Returns the full list of thematic categories available for filtering forecasts,
+driver searches, and alert detection. Use the `id` values from this response
+in the `filters.categories` field of your requests.
+
+This is a discovery endpoint — category ids are **not** validated on submit,
+so you can filter by any integer in 1–9999, but this listing shows the ones
+that actually exist in the catalog.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -51,13 +56,13 @@ func (a *DefaultAPIService) ApiV1CategoriesGet(ctx context.Context) ApiApiV1Cate
 }
 
 // Execute executes the request
-//  @return CatalogListResponse
-func (a *DefaultAPIService) ApiV1CategoriesGetExecute(r ApiApiV1CategoriesGetRequest) (*CatalogListResponse, *http.Response, error) {
+//  @return CategoryListResponse
+func (a *DefaultAPIService) ApiV1CategoriesGetExecute(r ApiApiV1CategoriesGetRequest) (*CategoryListResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *CatalogListResponse
+		localVarReturnValue  *CategoryListResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DefaultAPIService.ApiV1CategoriesGet")
@@ -109,17 +114,6 @@ func (a *DefaultAPIService) ApiV1CategoriesGetExecute(r ApiApiV1CategoriesGetReq
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 502 {
-			var v ErrorMessage
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 503 {
 			var v ErrorMessage
