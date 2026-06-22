@@ -650,12 +650,18 @@ components:
         **`categories[]`** and **`regions[]`** value is an integer **1–9999** inclusive;
         optional **`limit`** is **0–10000**. See component **`Filters`** for the full schema.
       example:
+        aux_timeseries:
+        - key: 0.8008281904610115
+        - key: 0.8008281904610115
+        - key: 0.8008281904610115
+        - key: 0.8008281904610115
+        - key: 0.8008281904610115
         backtest: true
         pipeline_version: v1
-        soft_horizon: 2
+        soft_horizon: 7
         timeseries:
-          key: 5.962133916683182
-        recency_factor: 0.6027456183070403
+          key: 5.637376656633329
+        recency_factor: 0.14658129805029452
         timeseries_metadata:
           keywords:
           - keywords
@@ -667,9 +673,24 @@ components:
           title: title
         strictly_positive: false
         filters: ""
-        hard_horizon: 1
+        hard_horizon: 7
         frequency: monthly
       properties:
+        aux_timeseries:
+          description: |
+            Optional. One to ten auxiliary driver series. Each item is a map of the same
+            YYYY-MM-DD date keys as `timeseries` — exactly the same dates, no more and no
+            fewer — to numeric values. Each series becomes a forecast driver that is kept
+            through feature selection, and series are identified by their array position
+            (the first is `aux_0`, the second `aux_1`, and so on). When omitted, the
+            forecast runs without auxiliary drivers.
+          items:
+            additionalProperties:
+              type: number
+            type: object
+          maxItems: 10
+          minItems: 1
+          type: array
         backtest:
           description: "When true, run a backtest evaluation alongside the forecast."
           type: boolean

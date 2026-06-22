@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-22
+
+### Added
+
+- **`ForecastRequestV1.AuxTimeseries`**: optional slice of 1–10 auxiliary driver series for `SubmitForecast()`. Each series is a `map[string]float32` keyed on the same `YYYY-MM-DD` dates as `Timeseries` (exactly the same dates, no more and no fewer), and is kept through feature selection as a forecast driver (`aux_0`, `aux_1`, …). Leave nil for a driverless forecast.
+
 ## [0.1.3] - 2026-05-28
 
 ### Added

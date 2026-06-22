@@ -6,8 +6,11 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 	"time"
+
+	api "go.sybilion.dev/sybilion/api"
 )
 
 func TestClient_AuthHeaderOnMe(t *testing.T) {
@@ -166,4 +169,62 @@ func TestParseAPIError_FallsBackToOriginal(t *testing.T) {
 	if err.Error() == "" {
 		t.Fatal("expected non-empty error message")
 	}
+}
+
+func TestForecastRequestV1_AuxTimeseriesRoundTrip(t *testing.T) {
+	aux := []map[string]float32{
+		{"2015-01-01": 1.2, "2015-02-01": 1.4, "2015-03-01": 1.5},
+		{"2015-01-01": 9.0, "2015-02-01": 8.7, "2015-03-01": 8.9},
+	}
+	req := api.ForecastRequestV1{
+		PipelineVersion:    "v1",
+		Frequency:          "monthly",
+		RecencyFactor:      0.5,
+		TimeseriesMetadata: api.TimeseriesMetadata{Title: "Monthly Brent Crude Oil Price Index"},
+		Timeseries:         map[string]float32{"2015-01-01": 47.8, "2015-02-01": 58.1, "2015-03-01": 61.0},
+		SoftHorizon:        api.PtrInt32(12),
+		AuxTimeseries:      aux,
+	}
+
+	b, err := json.Marshal(req)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(b, &raw); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if _, ok := raw["aux_timeseries"]; !ok {
+		t.Fatalf("aux_timeseries missing from serialized request: %s", b)
+	}
+
+	var back api.ForecastRequestV1
+	if err := json.Unmarshal(b, &back); err != nil {
+		t.Fatalf("round-trip unmarshal: %v", err)
+	}
+	if len(back.AuxTimeseries) != 2 {
+		t.Fatalf("expected 2 aux series, got %d", len(back.AuxTimeseries))
+	}
+}
+
+func TestForecastRequestV1_AuxTimeseriesOmitted(t *testing.T) {
+	req := api.ForecastRequestV1{
+		PipelineVersion:    "v1",
+		Frequency:          "monthly",
+		RecencyFactor:      0.5,
+		TimeseriesMetadata: api.TimeseriesMetadata{Title: "Monthly Brent Crude Oil Price Index"},
+		Timeseries:         map[string]float32{"2015-01-01": 47.8},
+		SoftHorizon:        api.PtrInt32(12),
+	}
+	b, err := json.Marshal(req)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	if bytesContains(b, "aux_timeseries") {
+		t.Fatalf("aux_timeseries should be omitted when nil: %s", b)
+	}
+}
+
+func bytesContains(b []byte, sub string) bool {
+	return strings.Contains(string(b), sub)
 }

@@ -4,6 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**AuxTimeseries** | Pointer to **[]map[string]float32** | Optional. One to ten auxiliary driver series. Each item is a map of the same YYYY-MM-DD date keys as &#x60;timeseries&#x60; — exactly the same dates, no more and no fewer — to numeric values. Each series becomes a forecast driver that is kept through feature selection, and series are identified by their array position (the first is &#x60;aux_0&#x60;, the second &#x60;aux_1&#x60;, and so on). When omitted, the forecast runs without auxiliary drivers.  | [optional] 
 **Backtest** | Pointer to **bool** | When true, run a backtest evaluation alongside the forecast. | [optional] 
 **Filters** | Pointer to [**Filters**](Filters.md) | Optional. Each **&#x60;categories[]&#x60;** and **&#x60;regions[]&#x60;** entry must be an integer **1–9999** (inclusive). Optional **&#x60;limit&#x60;** is **0–10000**. Values are not verified against catalog APIs.  | [optional] 
 **Frequency** | **string** | Series cadence. Only \&quot;monthly\&quot; is currently supported; \&quot;daily\&quot; and \&quot;weekly\&quot; are reserved. | 
@@ -33,6 +34,31 @@ will change when the set of required properties is changed
 NewForecastRequestV1WithDefaults instantiates a new ForecastRequestV1 object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
+
+### GetAuxTimeseries
+
+`func (o *ForecastRequestV1) GetAuxTimeseries() []map[string]float32`
+
+GetAuxTimeseries returns the AuxTimeseries field if non-nil, zero value otherwise.
+
+### GetAuxTimeseriesOk
+
+`func (o *ForecastRequestV1) GetAuxTimeseriesOk() (*[]map[string]float32, bool)`
+
+GetAuxTimeseriesOk returns a tuple with the AuxTimeseries field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAuxTimeseries
+
+`func (o *ForecastRequestV1) SetAuxTimeseries(v []map[string]float32)`
+
+SetAuxTimeseries sets AuxTimeseries field to given value.
+
+### HasAuxTimeseries
+
+`func (o *ForecastRequestV1) HasAuxTimeseries() bool`
+
+HasAuxTimeseries returns a boolean if a field has been set.
 
 ### GetBacktest
 

@@ -165,6 +165,21 @@ components:
                 **`categories[]`** and **`regions[]`** value is an integer **1–9999** inclusive;
                 optional **`limit`** is **0–10000**. See component **`Filters`** for the full schema.
             properties:
+                aux_timeseries:
+                    description: |
+                        Optional. One to ten auxiliary driver series. Each item is a map of the same
+                        YYYY-MM-DD date keys as `timeseries` — exactly the same dates, no more and no
+                        fewer — to numeric values. Each series becomes a forecast driver that is kept
+                        through feature selection, and series are identified by their array position
+                        (the first is `aux_0`, the second `aux_1`, and so on). When omitted, the
+                        forecast runs without auxiliary drivers.
+                    type: array
+                    minItems: 1
+                    maxItems: 10
+                    items:
+                        additionalProperties:
+                            type: number
+                        type: object
                 backtest:
                     description: When true, run a backtest evaluation alongside the forecast.
                     type: boolean

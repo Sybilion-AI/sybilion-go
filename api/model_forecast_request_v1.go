@@ -21,6 +21,8 @@ var _ MappedNullable = &ForecastRequestV1{}
 
 // ForecastRequestV1 Body of `POST /api/v1/forecasts`. Provide at least one of **`soft_horizon`** or **`hard_horizon`** (see property descriptions). Optional **`filters`**: when present, each **`categories[]`** and **`regions[]`** value is an integer **1–9999** inclusive; optional **`limit`** is **0–10000**. See component **`Filters`** for the full schema. 
 type ForecastRequestV1 struct {
+	// Optional. One to ten auxiliary driver series. Each item is a map of the same YYYY-MM-DD date keys as `timeseries` — exactly the same dates, no more and no fewer — to numeric values. Each series becomes a forecast driver that is kept through feature selection, and series are identified by their array position (the first is `aux_0`, the second `aux_1`, and so on). When omitted, the forecast runs without auxiliary drivers. 
+	AuxTimeseries []map[string]float32 `json:"aux_timeseries,omitempty"`
 	// When true, run a backtest evaluation alongside the forecast.
 	Backtest *bool `json:"backtest,omitempty"`
 	// Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999** (inclusive). Optional **`limit`** is **0–10000**. Values are not verified against catalog APIs. 
@@ -67,6 +69,38 @@ func NewForecastRequestV1WithDefaults() *ForecastRequestV1 {
 	var strictlyPositive bool = false
 	this.StrictlyPositive = &strictlyPositive
 	return &this
+}
+
+// GetAuxTimeseries returns the AuxTimeseries field value if set, zero value otherwise.
+func (o *ForecastRequestV1) GetAuxTimeseries() []map[string]float32 {
+	if o == nil || IsNil(o.AuxTimeseries) {
+		var ret []map[string]float32
+		return ret
+	}
+	return o.AuxTimeseries
+}
+
+// GetAuxTimeseriesOk returns a tuple with the AuxTimeseries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ForecastRequestV1) GetAuxTimeseriesOk() ([]map[string]float32, bool) {
+	if o == nil || IsNil(o.AuxTimeseries) {
+		return nil, false
+	}
+	return o.AuxTimeseries, true
+}
+
+// HasAuxTimeseries returns a boolean if a field has been set.
+func (o *ForecastRequestV1) HasAuxTimeseries() bool {
+	if o != nil && !IsNil(o.AuxTimeseries) {
+		return true
+	}
+
+	return false
+}
+
+// SetAuxTimeseries gets a reference to the given []map[string]float32 and assigns it to the AuxTimeseries field.
+func (o *ForecastRequestV1) SetAuxTimeseries(v []map[string]float32) {
+	o.AuxTimeseries = v
 }
 
 // GetBacktest returns the Backtest field value if set, zero value otherwise.
@@ -359,6 +393,9 @@ func (o ForecastRequestV1) MarshalJSON() ([]byte, error) {
 
 func (o ForecastRequestV1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.AuxTimeseries) {
+		toSerialize["aux_timeseries"] = o.AuxTimeseries
+	}
 	if !IsNil(o.Backtest) {
 		toSerialize["backtest"] = o.Backtest
 	}
