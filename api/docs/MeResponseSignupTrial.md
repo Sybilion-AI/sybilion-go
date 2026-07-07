@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ExpiresAt** | Pointer to **time.Time** | Omitted if the grant row is missing (abnormal) | [optional] 
+**ExpiresAt** | Pointer to **time.Time** |  | [optional] 
 **GrantedAt** | Pointer to **time.Time** |  | [optional] 
 **InitialEurCents** | Pointer to **int64** |  | [optional] 
 **RemainingEurCents** | Pointer to **int64** |  | [optional] 

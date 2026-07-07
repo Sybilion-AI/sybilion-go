@@ -19,9 +19,13 @@ var _ MappedNullable = &ApiV1ForecastsPost202Response{}
 
 // ApiV1ForecastsPost202Response struct for ApiV1ForecastsPost202Response
 type ApiV1ForecastsPost202Response struct {
+	// Unique job id — use this to poll status and download artifacts.
 	JobId *string `json:"job_id,omitempty"`
+	// Convenience URL for polling this job's status.
 	PollUrl *string `json:"poll_url,omitempty"`
+	// Internal run identifier (opaque; useful for support).
 	RunId *string `json:"run_id,omitempty"`
+	// Internal workflow identifier (opaque; useful for support).
 	Workflow *string `json:"workflow,omitempty"`
 }
 

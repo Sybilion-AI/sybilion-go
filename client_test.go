@@ -21,6 +21,7 @@ func TestClient_AuthHeaderOnMe(t *testing.T) {
 		gotAuth = r.Header.Get("Authorization")
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"user_id":             "00000000-0000-0000-0000-000000000001",
+			"role":                "user",
 			"balance_eur_cents":   0,
 			"available_eur_cents": 0,
 			"api_usage_tier":      0,
@@ -60,6 +61,7 @@ func TestClient_TokenFromEnv(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]any{
 			"user_id":             "00000000-0000-0000-0000-000000000001",
+			"role":                "user",
 			"balance_eur_cents":   0,
 			"available_eur_cents": 0,
 			"api_usage_tier":      0,

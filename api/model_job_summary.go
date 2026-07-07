@@ -20,22 +20,23 @@ import (
 // checks if the JobSummary type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &JobSummary{}
 
-// JobSummary Lightweight projection of an async_jobs row (no payload, no manifest).
+// JobSummary Lightweight summary of an async job (no payload or artifact manifest).
 type JobSummary struct {
 	CreatedAt time.Time `json:"created_at"`
-	// Final settled charge for the job, in EUR cents. Null until settled.
+	// Final settled charge for the job in EUR cents. Null until the job reaches a terminal state.
 	EurCentsFinal NullableInt64 `json:"eur_cents_final,omitempty"`
 	JobId string `json:"job_id"`
-	// Today only \"forecast\"; future pipeline types will appear here.
+	// Pipeline that produced this job — currently always `forecast`.
 	PipelineType string `json:"pipeline_type"`
-	// Internal run id (omitted for jobs that haven't started yet).
+	// Opaque internal run identifier. Omitted for jobs that have not started yet; include in support requests.
 	RunId *string `json:"run_id,omitempty"`
-	// True iff the job has reached a terminal state and been billed.
+	// True once the job has reached a terminal state and the charge has been posted.
 	Settled bool `json:"settled"`
 	SettledAt NullableTime `json:"settled_at,omitempty"`
 	Status string `json:"status"`
+	// Human-readable failure message for `failed` or `canceled` jobs; null for non-terminal statuses or cleanly-canceled jobs.
 	TerminalReason NullableString `json:"terminal_reason,omitempty"`
-	// Internal workflow id (omitted for jobs that haven't started yet).
+	// Opaque internal workflow identifier. Omitted for jobs that have not started yet; include in support requests.
 	WorkflowId *string `json:"workflow_id,omitempty"`
 }
 

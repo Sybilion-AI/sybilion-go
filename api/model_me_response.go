@@ -21,17 +21,23 @@ var _ MappedNullable = &MeResponse{}
 
 // MeResponse Authenticated user snapshot. All monetary fields are integer EUR cents (1 EUR = 100 cents). 
 type MeResponse struct {
+	// Current pricing tier level. Higher levels unlock better rate limits and job concurrency.
 	ApiUsageTier int32 `json:"api_usage_tier"`
 	AutoRecharge *AutoRechargeState `json:"auto_recharge,omitempty"`
-	// balance_eur_cents minus active holds for in-flight async jobs.
+	// Spendable balance in EUR cents — `balance_eur_cents` minus any credits held for in-flight async jobs.
 	AvailableEurCents int64 `json:"available_eur_cents"`
-	// Ledger sum exposed as EUR cents.
+	// Total credit balance in EUR cents, before deducting active holds.
 	BalanceEurCents int64 `json:"balance_eur_cents"`
-	// Active grants (non-empty, unexpired). Consumed in expires_at ascending order.
+	// Active credit grants (non-empty, unexpired), consumed in `expires_at` ascending order.
 	EuroTranches []EuroTranche `json:"euro_tranches"`
+	// True once the account has completed at least one successful Stripe payment.
 	HasEverPaid bool `json:"has_ever_paid"`
+	// Cumulative EUR cents charged across all Stripe payments, all time.
 	LifetimePaidCents int64 `json:"lifetime_paid_cents"`
+	// Total number of successful Stripe payments on this account.
 	PaymentCount int32 `json:"payment_count"`
+	// Account role. `admin` accounts can sign in to the staff back-office; regular accounts are `user`.
+	Role string `json:"role"`
 	SignupTrial NullableMeResponseSignupTrial `json:"signup_trial,omitempty"`
 	UserId string `json:"user_id"`
 }
@@ -42,7 +48,7 @@ type _MeResponse MeResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewMeResponse(apiUsageTier int32, availableEurCents int64, balanceEurCents int64, euroTranches []EuroTranche, hasEverPaid bool, lifetimePaidCents int64, paymentCount int32, userId string) *MeResponse {
+func NewMeResponse(apiUsageTier int32, availableEurCents int64, balanceEurCents int64, euroTranches []EuroTranche, hasEverPaid bool, lifetimePaidCents int64, paymentCount int32, role string, userId string) *MeResponse {
 	this := MeResponse{}
 	this.ApiUsageTier = apiUsageTier
 	this.AvailableEurCents = availableEurCents
@@ -51,6 +57,7 @@ func NewMeResponse(apiUsageTier int32, availableEurCents int64, balanceEurCents 
 	this.HasEverPaid = hasEverPaid
 	this.LifetimePaidCents = lifetimePaidCents
 	this.PaymentCount = paymentCount
+	this.Role = role
 	this.UserId = userId
 	return &this
 }
@@ -263,6 +270,30 @@ func (o *MeResponse) SetPaymentCount(v int32) {
 	o.PaymentCount = v
 }
 
+// GetRole returns the Role field value
+func (o *MeResponse) GetRole() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Role
+}
+
+// GetRoleOk returns a tuple with the Role field value
+// and a boolean to check if the value has been set.
+func (o *MeResponse) GetRoleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Role, true
+}
+
+// SetRole sets field value
+func (o *MeResponse) SetRole(v string) {
+	o.Role = v
+}
+
 // GetSignupTrial returns the SignupTrial field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *MeResponse) GetSignupTrial() MeResponseSignupTrial {
 	if o == nil || IsNil(o.SignupTrial.Get()) {
@@ -349,6 +380,7 @@ func (o MeResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize["has_ever_paid"] = o.HasEverPaid
 	toSerialize["lifetime_paid_cents"] = o.LifetimePaidCents
 	toSerialize["payment_count"] = o.PaymentCount
+	toSerialize["role"] = o.Role
 	if o.SignupTrial.IsSet() {
 		toSerialize["signup_trial"] = o.SignupTrial.Get()
 	}
@@ -368,6 +400,7 @@ func (o *MeResponse) UnmarshalJSON(data []byte) (err error) {
 		"has_ever_paid",
 		"lifetime_paid_cents",
 		"payment_count",
+		"role",
 		"user_id",
 	}
 

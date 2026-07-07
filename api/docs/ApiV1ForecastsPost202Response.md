@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**JobId** | Pointer to **string** |  | [optional] 
-**PollUrl** | Pointer to **string** |  | [optional] 
-**RunId** | Pointer to **string** |  | [optional] 
-**Workflow** | Pointer to **string** |  | [optional] 
+**JobId** | Pointer to **string** | Unique job id — use this to poll status and download artifacts. | [optional] 
+**PollUrl** | Pointer to **string** | Convenience URL for polling this job&#39;s status. | [optional] 
+**RunId** | Pointer to **string** | Internal run identifier (opaque; useful for support). | [optional] 
+**Workflow** | Pointer to **string** | Internal workflow identifier (opaque; useful for support). | [optional] 
 
 ## Methods
 

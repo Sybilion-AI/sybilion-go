@@ -7,9 +7,9 @@ Name | Type | Description | Notes
 **CreatedAt** | **time.Time** |  | 
 **ExpiresAt** | **time.Time** |  | 
 **Id** | **string** |  | 
-**InitialEurCents** | **int64** |  | 
-**RemainingEurCents** | **int64** |  | 
-**Source** | **string** | One of signup_trial, stripe, partner, legacy. Other labels may appear for custom grants. | 
+**InitialEurCents** | **int64** | Original size of this tranche in EUR cents. | 
+**RemainingEurCents** | **int64** | Unconsumed balance remaining in this tranche, in EUR cents. | 
+**Source** | **string** | Origin of the tranche — one of &#x60;signup_trial&#x60;, &#x60;stripe&#x60;, &#x60;partner&#x60;, &#x60;legacy&#x60;. Other labels may appear for custom grants. | 
 
 ## Methods
 

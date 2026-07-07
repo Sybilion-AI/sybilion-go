@@ -19,15 +19,17 @@ import (
 // checks if the RecommendRequestV1 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &RecommendRequestV1{}
 
-// RecommendRequestV1 Body of `POST /api/v1/drivers`. Mirrors the upstream Recommend service contract. Note that the version field is named `version` (not `pipeline_version` as on `/forecasts`).  Required fields: `version`, `recency_factor`, `timeseries_metadata`. Both `filters` and `timeseries` are optional on the recommend endpoint — when omitted, the handler drops them from the upstream payload entirely (no `null` is sent).  When `filters` is present, **`categories[]`** and **`regions[]`** follow the same rules as `POST /api/v1/forecasts`: each integer must be **1–9999** inclusive; optional **`limit`** is **0–10000**. See schema **`Filters`** for the canonical shape. 
+// RecommendRequestV1 Body of `POST /api/v1/drivers`. Mirrors the upstream Recommend service contract. Note that the version field is named `version` (not `pipeline_version` as on `/forecasts`).  Required fields: `version`, `recency_factor`, `timeseries_metadata`. Both `filters` and `timeseries` are optional — when omitted, the handler drops them from the upstream payload entirely (no `null` is sent). When `filters.limit` is omitted, a per-environment default is applied. 
 type RecommendRequestV1 struct {
-	// Optional. Same validation as **`POST /api/v1/forecasts`**: each **`categories[]`** and **`regions[]`** entry is an integer **1–9999** (inclusive); optional **`limit`** is **0–10000**. Values are not verified against catalog APIs. 
+	// Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999** (inclusive). Optional **`limit`** is **0–1000** (default **100** when omitted). Values are not verified against catalog APIs. 
 	Filters *Filters `json:"filters,omitempty"`
+	// Weight given to more recent observations when ranking drivers. 0.0 = equal weight; 1.0 = strongest recency bias.
 	RecencyFactor float64 `json:"recency_factor"`
-	// Optional. Map of YYYY-MM-DD date keys to numeric observation values. When supplied, all keys must parse as YYYY-MM-DD and all values must be finite. Unlike `/forecasts`, this endpoint is frequency-agnostic — there is no monthly alignment, gap detection, or 60-point minimum. When omitted, the handler does not forward the field to the upstream Recommend service at all. 
+	// Optional. Map of YYYY-MM-DD date keys to numeric observation values. When supplied, all keys must parse as YYYY-MM-DD and all values must be finite. Unlike `/forecasts`, this endpoint is frequency-agnostic — no monthly alignment, gap detection, or minimum length is enforced. When omitted, the handler does not forward the field upstream. 
 	Timeseries *map[string]float32 `json:"timeseries,omitempty"`
+	// Describes the series so the ranking model can identify relevant drivers.
 	TimeseriesMetadata TimeseriesMetadata `json:"timeseries_metadata"`
-	// Recommend pipeline version. Closed set; only v1 is supported today. Used **locally** to select the per-version validator and is **not forwarded** to the upstream Recommend service. 
+	// Recommend pipeline version. Closed set; only `v1` is supported today. Used locally to select the per-version validator and is **not forwarded** to the upstream Recommend service. 
 	Version string `json:"version"`
 }
 

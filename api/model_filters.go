@@ -17,12 +17,13 @@ import (
 // checks if the Filters type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &Filters{}
 
-// Filters Optional narrowing for forecast and drivers requests. Integer ids must fall in **1..9999**.  **Discovery:** `GET /api/v1/regions` and `GET /api/v1/categories` return the available dimension listings so you can choose ids — submitted filter ids are not cross-checked against those listings on `POST /forecasts` or `POST /drivers`. 
+// Filters Optional narrowing for forecast, drivers, and alerts requests. Category and region ids must fall in **1–9999**. Discover valid ids via `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not cross-checked on submit. 
 type Filters struct {
-	// Dimension ids; each item must be an integer from **1** through **9999** inclusive.
+	// Thematic category ids to filter by; each must be an integer **1–9999** inclusive.
 	Categories []int32 `json:"categories,omitempty"`
+	// Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000).
 	Limit *int32 `json:"limit,omitempty"`
-	// Dimension ids; each item must be an integer from **1** through **9999** inclusive.
+	// Geographic region ids to filter by; each must be an integer **1–9999** inclusive.
 	Regions []int32 `json:"regions,omitempty"`
 }
 

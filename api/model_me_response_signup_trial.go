@@ -18,9 +18,8 @@ import (
 // checks if the MeResponseSignupTrial type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &MeResponseSignupTrial{}
 
-// MeResponseSignupTrial Present when a signup (free) trial tranche was granted. Omitted for users with no trial or before grant.
+// MeResponseSignupTrial Present when a free trial tranche was granted at signup. Omitted for accounts with no trial.
 type MeResponseSignupTrial struct {
-	// Omitted if the grant row is missing (abnormal)
 	ExpiresAt *time.Time `json:"expires_at,omitempty"`
 	GrantedAt *time.Time `json:"granted_at,omitempty"`
 	InitialEurCents *int64 `json:"initial_eur_cents,omitempty"`

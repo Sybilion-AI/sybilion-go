@@ -81,42 +81,60 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*DefaultAPI* | [**ApiV1AlertsPost**](docs/DefaultAPI.md#apiv1alertspost) | **Post** /api/v1/alerts | Detect anomaly alerts for your timeseries
 *DefaultAPI* | [**ApiV1CategoriesGet**](docs/DefaultAPI.md#apiv1categoriesget) | **Get** /api/v1/categories | List available thematic categories
-*DefaultAPI* | [**ApiV1DriversPost**](docs/DefaultAPI.md#apiv1driverspost) | **Post** /api/v1/drivers | Recommend ranked driver-dataset candidates (synchronous proxy)
-*DefaultAPI* | [**ApiV1ForecastsIdArtifactsNameGet**](docs/DefaultAPI.md#apiv1forecastsidartifactsnameget) | **Get** /api/v1/forecasts/{id}/artifacts/{name} | Stream a single output file (proxied from internal artifact store; no gs:// URLs)
-*DefaultAPI* | [**ApiV1ForecastsIdGet**](docs/DefaultAPI.md#apiv1forecastsidget) | **Get** /api/v1/forecasts/{id} | Poll forecast job status and artifact metadata (downloads via artifacts sub-path)
-*DefaultAPI* | [**ApiV1ForecastsPost**](docs/DefaultAPI.md#apiv1forecastspost) | **Post** /api/v1/forecasts | Start async forecast job
-*DefaultAPI* | [**ApiV1JobsGet**](docs/DefaultAPI.md#apiv1jobsget) | **Get** /api/v1/jobs | Paginated list of the caller&#39;s async jobs
-*DefaultAPI* | [**ApiV1MeGet**](docs/DefaultAPI.md#apiv1meget) | **Get** /api/v1/me | Current user, balances, and usage tier
+*DefaultAPI* | [**ApiV1DriversPost**](docs/DefaultAPI.md#apiv1driverspost) | **Post** /api/v1/drivers | Rank driver datasets for your timeseries
+*DefaultAPI* | [**ApiV1ForecastsIdArtifactsNameGet**](docs/DefaultAPI.md#apiv1forecastsidartifactsnameget) | **Get** /api/v1/forecasts/{id}/artifacts/{name} | Download a forecast output file
+*DefaultAPI* | [**ApiV1ForecastsIdGet**](docs/DefaultAPI.md#apiv1forecastsidget) | **Get** /api/v1/forecasts/{id} | Poll forecast job status and artifact list
+*DefaultAPI* | [**ApiV1ForecastsPost**](docs/DefaultAPI.md#apiv1forecastspost) | **Post** /api/v1/forecasts | Submit an async forecast job
+*DefaultAPI* | [**ApiV1JobsGet**](docs/DefaultAPI.md#apiv1jobsget) | **Get** /api/v1/jobs | List your async jobs
+*DefaultAPI* | [**ApiV1MeGet**](docs/DefaultAPI.md#apiv1meget) | **Get** /api/v1/me | Account snapshot — balance, tier, and credit tranches
 *DefaultAPI* | [**ApiV1RegionsGet**](docs/DefaultAPI.md#apiv1regionsget) | **Get** /api/v1/regions | List available geographic regions
-*DefaultAPI* | [**ApiV1UsageGet**](docs/DefaultAPI.md#apiv1usageget) | **Get** /api/v1/usage | Paginated usage (charged tasks)
-*DefaultAPI* | [**HealthGet**](docs/DefaultAPI.md#healthget) | **Get** /health | Health check
+*DefaultAPI* | [**ApiV1UsageGet**](docs/DefaultAPI.md#apiv1usageget) | **Get** /api/v1/usage | Billing history (paginated usage events)
+*DefaultAPI* | [**HealthGet**](docs/DefaultAPI.md#healthget) | **Get** /health | Service health check
 
 
 ## Documentation For Models
 
+ - [AlertItemV1](docs/AlertItemV1.md)
+ - [AlertsRequestV1](docs/AlertsRequestV1.md)
+ - [ApiV1AlertsPost200Response](docs/ApiV1AlertsPost200Response.md)
+ - [ApiV1ApiKeysPostRequest](docs/ApiV1ApiKeysPostRequest.md)
+ - [ApiV1BillingPortalPost200Response](docs/ApiV1BillingPortalPost200Response.md)
+ - [ApiV1DriversPost200Response](docs/ApiV1DriversPost200Response.md)
+ - [ApiV1DriversPost200ResponseData](docs/ApiV1DriversPost200ResponseData.md)
  - [ApiV1ForecastsIdGet200Response](docs/ApiV1ForecastsIdGet200Response.md)
  - [ApiV1ForecastsPost202Response](docs/ApiV1ForecastsPost202Response.md)
  - [ApiV1JobsGet200Response](docs/ApiV1JobsGet200Response.md)
  - [ApiV1UsageGet200Response](docs/ApiV1UsageGet200Response.md)
+ - [AutoRechargePatch](docs/AutoRechargePatch.md)
  - [AutoRechargeState](docs/AutoRechargeState.md)
  - [CatalogListResponse](docs/CatalogListResponse.md)
  - [CategoryItemV1](docs/CategoryItemV1.md)
  - [CategoryListResponse](docs/CategoryListResponse.md)
+ - [CheckoutRequest](docs/CheckoutRequest.md)
+ - [DriverItemV1](docs/DriverItemV1.md)
  - [ErrorMessage](docs/ErrorMessage.md)
  - [EuroTranche](docs/EuroTranche.md)
  - [Filters](docs/Filters.md)
  - [ForecastArtifactMeta](docs/ForecastArtifactMeta.md)
  - [ForecastRequestV1](docs/ForecastRequestV1.md)
- - [HealthResponse](docs/HealthResponse.md)
+ - [HealthGet200Response](docs/HealthGet200Response.md)
+ - [HealthGet200ResponseComponentsValue](docs/HealthGet200ResponseComponentsValue.md)
+ - [HealthGet503Response](docs/HealthGet503Response.md)
+ - [HealthGet503ResponseComponentsValue](docs/HealthGet503ResponseComponentsValue.md)
  - [JobSummary](docs/JobSummary.md)
  - [JobsPagination](docs/JobsPagination.md)
  - [MeResponse](docs/MeResponse.md)
  - [MeResponseSignupTrial](docs/MeResponseSignupTrial.md)
+ - [NewsItemV1](docs/NewsItemV1.md)
  - [Pagination](docs/Pagination.md)
  - [RecommendRequestV1](docs/RecommendRequestV1.md)
  - [RegionItemV1](docs/RegionItemV1.md)
  - [RegionListResponse](docs/RegionListResponse.md)
+ - [TierConfig](docs/TierConfig.md)
+ - [TiersResponse](docs/TiersResponse.md)
+ - [TiersResponseProgress](docs/TiersResponseProgress.md)
  - [TimeseriesMetadata](docs/TimeseriesMetadata.md)
  - [UsageEvent](docs/UsageEvent.md)
  - [ValidationErrorResponse](docs/ValidationErrorResponse.md)

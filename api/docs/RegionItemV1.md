@@ -5,15 +5,15 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | **int32** | Integer identifier. Use this value in filters.regions[]. | 
-**Latitude** | Pointer to **float64** | Geographic latitude (0.0 when not applicable). | [optional] [default to 0.0]
-**Longitude** | Pointer to **float64** | Geographic longitude (0.0 when not applicable). | [optional] [default to 0.0]
+**Latitude** | **float64** | Geographic latitude (0.0 when not applicable). | 
+**Longitude** | **float64** | Geographic longitude (0.0 when not applicable). | 
 **Name** | **string** | Human-readable region label. | 
 
 ## Methods
 
 ### NewRegionItemV1
 
-`func NewRegionItemV1(id int32, name string, ) *RegionItemV1`
+`func NewRegionItemV1(id int32, latitude float64, longitude float64, name string, ) *RegionItemV1`
 
 NewRegionItemV1 instantiates a new RegionItemV1 object
 This constructor will assign default values to properties that have it defined,
@@ -67,11 +67,6 @@ and a boolean to check if the value has been set.
 
 SetLatitude sets Latitude field to given value.
 
-### HasLatitude
-
-`func (o *RegionItemV1) HasLatitude() bool`
-
-HasLatitude returns a boolean if a field has been set.
 
 ### GetLongitude
 
@@ -92,11 +87,6 @@ and a boolean to check if the value has been set.
 
 SetLongitude sets Longitude field to given value.
 
-### HasLongitude
-
-`func (o *RegionItemV1) HasLongitude() bool`
-
-HasLongitude returns a boolean if a field has been set.
 
 ### GetName
 

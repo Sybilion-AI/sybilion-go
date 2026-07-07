@@ -17,11 +17,15 @@ import (
 // checks if the ForecastArtifactMeta type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ForecastArtifactMeta{}
 
-// ForecastArtifactMeta struct for ForecastArtifactMeta
+// ForecastArtifactMeta Metadata for a single output file produced by a completed forecast job.
 type ForecastArtifactMeta struct {
+	// MIME type of the artifact (e.g. `application/json`).
 	ContentType *string `json:"content_type,omitempty"`
+	// Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
 	Href *string `json:"href,omitempty"`
+	// Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
 	Name *string `json:"name,omitempty"`
+	// File size in bytes.
 	Size *int64 `json:"size,omitempty"`
 }
 
