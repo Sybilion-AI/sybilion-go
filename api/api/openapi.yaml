@@ -1,15 +1,9 @@
 openapi: 3.0.3
 info:
-  description: 'The Sybilion API powers the Sybilion Developers Portal: forecasts,
-    drivers, catalog, account
-
-    and usage. Authenticate every request with `Authorization: Bearer <token>` using
-    either an
-
-    API key created in the Developers Portal or an Auth0 access token from your dashboard
-    session.
-
-    '
+  description: |
+    The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account
+    and usage. Authenticate every request with `Authorization: Bearer <token>` using either an
+    API key created in the Developers Portal or an Auth0 access token from your dashboard session.
   title: Sybilion API
   version: 0.1.0
 servers:
@@ -17,14 +11,11 @@ servers:
 paths:
   /api/v1/alerts:
     post:
-      description: 'Finds alerts related to the provided metadata.
-
+      description: |
+        Finds alerts related to the provided metadata.
 
         This is a synchronous billed endpoint — you are charged per alert returned.
-
         No charge is recorded on validation errors or upstream failures.
-
-        '
       requestBody:
         content:
           application/json:
@@ -32,22 +23,22 @@ paths:
               $ref: '#/components/schemas/AlertsRequestV1'
         required: true
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/_api_v1_alerts_post_200_response'
-          description: Alerts detected for your timeseries, ordered by relevance.
-        '400':
+          description: "Alerts detected for your timeseries, ordered by relevance."
+        "400":
           description: Malformed JSON body.
-        '401':
+        "401":
           description: Missing or invalid bearer token.
-        '402':
+        "402":
           description: Insufficient credits — the request did not reach the upstream
             service.
-        '413':
+        "413":
           description: Request body too large.
-        '422':
+        "422":
           content:
             application/json:
               example:
@@ -58,12 +49,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationErrorResponse'
           description: Payload failed validation.
-        '429':
+        "429":
           description: Rate limit exceeded — too many synchronous billed requests
             per minute.
-        '502':
+        "502":
           description: Upstream service error or unreachable.
-        '503':
+        "503":
           content:
             application/json:
               example:
@@ -76,23 +67,16 @@ paths:
       summary: Detect anomaly alerts for your timeseries
   /api/v1/categories:
     get:
-      description: 'Returns the full list of thematic categories available for filtering
-        forecasts,
-
+      description: |
+        Returns the full list of thematic categories available for filtering forecasts,
         driver searches, and alert detection. Use the `id` values from this response
-
         in the `filters.categories` field of your requests.
 
-
         This is a discovery endpoint — category ids are **not** validated on submit,
-
         so you can filter by any integer in 1–9999, but this listing shows the ones
-
         that actually exist in the catalog.
-
-        '
       responses:
-        '200':
+        "200":
           content:
             application/json:
               example:
@@ -105,12 +89,12 @@ paths:
                   name: Financials
               schema:
                 $ref: '#/components/schemas/CategoryListResponse'
-          description: Full category listing, sorted by `id` ascending.
-        '401':
+          description: "Full category listing, sorted by `id` ascending."
+        "401":
           description: Missing or invalid bearer token.
-        '502':
+        "502":
           description: Catalog service error or unreachable.
-        '503':
+        "503":
           content:
             application/json:
               example:
@@ -123,19 +107,13 @@ paths:
       summary: List available thematic categories
   /api/v1/drivers:
     post:
-      description: 'Retrieves drivers ranked by how well they explain your timeseries,
-        returning
-
+      description: |
+        Retrieves drivers ranked by how well they explain your timeseries, returning
         a scored list of potential economic drivers. Results are ordered by relevance
-
         score descending.
 
-
         This is a synchronous billed endpoint — you are charged per driver returned.
-
         No charge is recorded on validation errors or upstream failures.
-
-        '
       requestBody:
         content:
           application/json:
@@ -143,7 +121,7 @@ paths:
               $ref: '#/components/schemas/RecommendRequestV1'
         required: true
       responses:
-        '200':
+        "200":
           content:
             application/json:
               example:
@@ -160,16 +138,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/_api_v1_drivers_post_200_response'
           description: Ranked driver candidates for your timeseries.
-        '400':
+        "400":
           description: Malformed JSON body.
-        '401':
+        "401":
           description: Missing or invalid bearer token.
-        '402':
+        "402":
           description: Insufficient credits — the request did not reach the upstream
             service.
-        '413':
+        "413":
           description: Request body too large.
-        '422':
+        "422":
           content:
             application/json:
               example:
@@ -180,12 +158,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationErrorResponse'
           description: Payload failed validation.
-        '429':
+        "429":
           description: Rate limit exceeded — too many synchronous billed requests
             per minute.
-        '502':
+        "502":
           description: Upstream service error or unreachable.
-        '503':
+        "503":
           content:
             application/json:
               example:
@@ -198,21 +176,14 @@ paths:
       summary: Rank driver datasets for your timeseries
   /api/v1/forecasts:
     post:
-      description: 'Submits a monthly forecast job. The job runs asynchronously —
-        poll
-
+      description: |
+        Submits a monthly forecast job. The job runs asynchronously — poll
         `GET /api/v1/forecasts/{id}` until `status` is `completed` or `failed`.
-
         Output files are then available via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
 
-
         The timeseries must contain at least 60 monthly observations (5 years) aligned
-
         to the first of each month. At least one of `soft_horizon` or `hard_horizon`
-
         must be specified.
-
-        '
       requestBody:
         content:
           application/json:
@@ -220,7 +191,7 @@ paths:
               $ref: '#/components/schemas/ForecastRequestV1'
         required: true
       responses:
-        '202':
+        "202":
           content:
             application/json:
               example:
@@ -231,13 +202,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/_api_v1_forecasts_post_202_response'
           description: Job accepted. Use `job_id` to poll status.
-        '400':
+        "400":
           description: Malformed JSON body.
-        '401':
+        "401":
           description: Missing or invalid bearer token.
-        '402':
+        "402":
           description: Insufficient credits.
-        '422':
+        "422":
           content:
             application/json:
               example:
@@ -248,7 +219,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ValidationErrorResponse'
           description: Payload failed validation.
-        '503':
+        "503":
           content:
             application/json:
               example:
@@ -261,17 +232,12 @@ paths:
       summary: Submit an async forecast job
   /api/v1/forecasts/{id}:
     get:
-      description: 'Returns the current status and artifact metadata for a forecast
-        job you own.
-
+      description: |
+        Returns the current status and artifact metadata for a forecast job you own.
         Poll this endpoint until `status` is `completed` or `failed`. Once completed,
-
         download output files via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
 
-
         Jobs tombstoned by the retention policy return 404.
-
-        '
       parameters:
       - description: Forecast job id returned by `POST /api/v1/forecasts`.
         explode: false
@@ -283,7 +249,7 @@ paths:
           type: string
         style: simple
       responses:
-        '200':
+        "200":
           content:
             application/json:
               example:
@@ -303,44 +269,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/_api_v1_forecasts__id__get_200_response'
           description: Job status and artifact metadata.
-        '401':
+        "401":
           description: Missing or invalid bearer token.
-        '404':
-          description: Forecast job not found, not owned by the caller, or removed
-            by the retention policy.
+        "404":
+          description: "Forecast job not found, not owned by the caller, or removed\
+            \ by the retention policy."
       security:
       - bearerAuth: []
       summary: Poll forecast job status and artifact list
   /api/v1/forecasts/{id}/artifacts/{name}:
     get:
-      description: 'Streams a single output file for a completed forecast job.
-
+      description: |
+        Streams a single output file for a completed forecast job.
 
         Available artifacts:
-
         - `forecast.json` — point forecast values for each horizon month
-
-        - `backtest_metrics.json` — accuracy metrics from the backtest evaluation
-        (only when `backtest: true`)
-
-        - `backtest_trajectories.json` — full trajectory samples from the backtest
-        (only when `backtest: true`)
-
+        - `backtest_metrics.json` — accuracy metrics from the backtest evaluation (only when `backtest: true`)
+        - `backtest_trajectories.json` — full trajectory samples from the backtest (only when `backtest: true`)
         - `external_signals.json` — external driver signals used by the model
-
         - `input.json` — the processed input timeseries as seen by the pipeline
 
-
-        The response body is the raw file bytes; the `Content-Type` header matches
-        the
-
-        artifact''s `content_type` field from `GET /api/v1/forecasts/{id}`.
-
+        The response body is the raw file bytes; the `Content-Type` header matches the
+        artifact's `content_type` field from `GET /api/v1/forecasts/{id}`.
         Supports HTTP `Range` requests for partial downloads.
-
         Jobs tombstoned by the retention policy return 404.
-
-        '
       parameters:
       - description: Forecast job id.
         explode: false
@@ -360,38 +312,32 @@ paths:
           type: string
         style: simple
       responses:
-        '200':
+        "200":
           content:
             application/octet-stream:
               schema:
                 format: binary
                 type: string
           description: Full artifact content.
-        '206':
+        "206":
           description: Partial content — response to a `Range` request.
-        '401':
+        "401":
           description: Missing or invalid bearer token.
-        '404':
-          description: Forecast job or artifact not found, not owned by the caller,
-            or removed by the retention policy.
+        "404":
+          description: "Forecast job or artifact not found, not owned by the caller,\
+            \ or removed by the retention policy."
       security:
       - bearerAuth: []
       summary: Download a forecast output file
   /api/v1/jobs:
     get:
-      description: 'Returns async jobs as a paginated list, sorted and filtered by
-        the query
-
+      description: |
+        Returns async jobs as a paginated list, sorted and filtered by the query
         parameters. Heavy fields (payload, artifact manifest) are omitted — fetch
-
         full per-job state via `GET /api/v1/forecasts/{id}`.
 
-
         Jobs tombstoned by the retention policy are excluded here and return 404
-
         on the detail endpoint.
-
-        '
       parameters:
       - description: 1-indexed page number.
         explode: true
@@ -462,67 +408,56 @@ paths:
         required: false
         schema:
           maxLength: 64
-          pattern: ^[a-z0-9_-]+$
+          pattern: "^[a-z0-9_-]+$"
           type: string
         style: form
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/_api_v1_jobs_get_200_response'
           description: Paginated job list.
-        '400':
-          description: Invalid query parameter — bad `page`, `limit`, `sort`, or `order`
-            value.
-        '401':
+        "400":
+          description: "Invalid query parameter — bad `page`, `limit`, `sort`, or\
+            \ `order` value."
+        "401":
           description: Missing or invalid bearer token.
-        '429':
+        "429":
           description: Rate limit exceeded.
       security:
       - bearerAuth: []
       summary: List your async jobs
   /api/v1/me:
     get:
-      description: 'Returns the account snapshot for the current user: credit balance,
-        active
-
+      description: |
+        Returns the account snapshot for the current user: credit balance, active
         credit tranches, auto-recharge settings, and current pricing tier. All
-
         monetary fields are integer EUR cents (1 EUR = 100 cents).
-
-        '
       responses:
-        '200':
+        "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MeResponse'
           description: Account snapshot for the authenticated user.
-        '401':
+        "401":
           description: Missing or invalid bearer token.
       security:
       - bearerAuth: []
-      summary: Account snapshot — balance, tier, and credit tranches
+      summary: "Account snapshot — balance, tier, and credit tranches"
   /api/v1/regions:
     get:
-      description: 'Returns the full list of geographic regions available for filtering
-        forecasts,
-
+      description: |
+        Returns the full list of geographic regions available for filtering forecasts,
         driver searches, and alert detection. Use the `id` value from each entry
-
         in the `filters.regions` field of your requests.
 
-
         This is a discovery endpoint — region ids are **not** validated on submit,
-
         so you can filter by any integer in 1–9999, but this listing shows the ones
-
         that actually exist in the catalog.
-
-        '
       responses:
-        '200':
+        "200":
           content:
             application/json:
               example:
@@ -537,12 +472,12 @@ paths:
                   longitude: -100.0
               schema:
                 $ref: '#/components/schemas/RegionListResponse'
-          description: Full region listing, sorted by `id` ascending.
-        '401':
+          description: "Full region listing, sorted by `id` ascending."
+        "401":
           description: Missing or invalid bearer token.
-        '502':
+        "502":
           description: Catalog service error or unreachable.
-        '503':
+        "503":
           content:
             application/json:
               example:
@@ -555,14 +490,10 @@ paths:
       summary: List available geographic regions
   /api/v1/usage:
     get:
-      description: 'Returns billing history as a paginated list of usage events. Each
-        event
-
+      description: |
+        Returns billing history as a paginated list of usage events. Each event
         represents one charge — either a completed async job or a synchronous billed
-
         API call. Use `sort` and `order` to control the result order.
-
-        '
       parameters:
       - description: 1-indexed page number.
         explode: true
@@ -613,7 +544,7 @@ paths:
           type: string
         style: form
       responses:
-        '200':
+        "200":
           content:
             application/json:
               example:
@@ -630,41 +561,35 @@ paths:
                   units: 20
                   credits_charged: 22
                   eur_cents_charged: 22
-                  created_at: 2026-05-24 14:32:10+00:00
+                  created_at: 2026-05-24T14:32:10Z
                   async_job_id: null
                 - id: 8320
                   endpoint: forecast
                   units: 1
                   credits_charged: 250
                   eur_cents_charged: 250
-                  created_at: 2026-05-01 10:04:32+00:00
+                  created_at: 2026-05-01T10:04:32Z
                   async_job_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
               schema:
                 $ref: '#/components/schemas/_api_v1_usage_get_200_response'
           description: Paginated billing history.
-        '400':
-          description: Invalid query parameter — bad `page`, `limit`, `sort`, or `order`
-            value.
-        '401':
+        "400":
+          description: "Invalid query parameter — bad `page`, `limit`, `sort`, or\
+            \ `order` value."
+        "401":
           description: Missing or invalid bearer token.
       security:
       - bearerAuth: []
       summary: Billing history (paginated usage events)
   /health:
     get:
-      description: 'Liveness check. Returns `status` ("ok" or "degraded") and a `components`
-        map
-
+      description: |
+        Liveness check. Returns `status` ("ok" or "degraded") and a `components` map
         where each key is a functional component name and each value reports its current
-
-        state. A 200 means all components are healthy; 503 means at least one is in
-        an
-
+        state. A 200 means all components are healthy; 503 means at least one is in an
         error state.
-
-        '
       responses:
-        '200':
+        "200":
           content:
             application/json:
               example:
@@ -679,7 +604,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/_health_get_200_response'
           description: All components healthy.
-        '503':
+        "503":
           content:
             application/json:
               example:
@@ -701,7 +626,7 @@ components:
       description: A single alert returned by the upstream Recommend service.
       example:
         trending: true
-        name: OMX Copenhagen Oil, Gas and Coal Price Index
+        name: "OMX Copenhagen Oil, Gas and Coal Price Index"
         pct_change: -7.14
         news:
         - trending: true
@@ -709,7 +634,7 @@ components:
           description: The US and Iran have reportedly reached a preliminary understanding
             to reopen the Strait of Hormuz.
           url: https://www.thenews.com.pk/latest/1403722
-          published_at: 2026-05-24 21:28:00+00:00
+          published_at: 2026-05-24T21:28:00Z
           source_name: The News International
           category: world
       properties:
@@ -723,8 +648,8 @@ components:
             $ref: '#/components/schemas/NewsItemV1'
           type: array
         pct_change:
-          description: Percentage change that triggered the alert (negative = decline,
-            positive = surge).
+          description: "Percentage change that triggered the alert (negative = decline,\
+            \ positive = surge)."
           format: double
           type: number
         trending:
@@ -732,15 +657,11 @@ components:
           type: boolean
       type: object
     AlertsRequestV1:
-      description: 'Body of `POST /api/v1/alerts`.
+      description: |
+        Body of `POST /api/v1/alerts`.
 
-
-        `filters.limit` controls how many alerts are returned (default **100**, max
-        **1000**).
-
+        `filters.limit` controls how many alerts are returned (default **100**, max **1000**).
         `date_from` / `date_to` are optional date bounds (YYYY-MM-DD).
-
-        '
       example:
         context_enriched: true
         date_from: 2024-01-01
@@ -753,8 +674,8 @@ components:
           - 42
           limit: 10
         metadata:
-          description: Monthly average Brent crude oil spot price in USD/barrel, sourced
-            from EIA.
+          description: "Monthly average Brent crude oil spot price in USD/barrel,\
+            \ sourced from EIA."
           keywords:
           - oil
           - brent
@@ -764,7 +685,7 @@ components:
           title: Brent Crude Oil Price Monthly
       properties:
         context_enriched:
-          description: When true, treat the supplied metadata as already context-enriched.
+          description: "When true, treat the supplied metadata as already context-enriched."
           type: boolean
         date_from:
           description: Optional start date bound for alert detection (YYYY-MM-DD).
@@ -775,15 +696,10 @@ components:
         filters:
           allOf:
           - $ref: '#/components/schemas/Filters'
-          description: 'Optional. `limit` controls the number of alerts returned (**0–1000**,
-            default **100**).
-
-            `categories[]` and `regions[]` narrow the alert universe; each must be
-            an integer **1–9999**.
-
+          description: |
+            Optional. `limit` controls the number of alerts returned (**0–1000**, default **100**).
+            `categories[]` and `regions[]` narrow the alert universe; each must be an integer **1–9999**.
             Values are not verified against catalog APIs.
-
-            '
         metadata:
           $ref: '#/components/schemas/TimeseriesMetadata'
       required:
@@ -800,8 +716,8 @@ components:
         has_stripe_customer: true
       properties:
         below_eur_cents:
-          description: When the available balance drops below this many EUR cents,
-            a recharge is triggered.
+          description: "When the available balance drops below this many EUR cents,\
+            \ a recharge is triggered."
           format: int64
           type: integer
         enabled:
@@ -828,7 +744,7 @@ components:
           format: int64
           type: integer
         target_eur_cents:
-          description: Balance target after a successful recharge, in EUR cents.
+          description: "Balance target after a successful recharge, in EUR cents."
           format: int64
           type: integer
       required:
@@ -842,14 +758,10 @@ components:
     CatalogListResponse:
       properties:
         items:
-          description: 'All regions or categories, sorted by numeric `id` ascending.
-            Each element
-
+          description: |
+            All regions or categories, sorted by numeric `id` ascending. Each element
             is an object with at least `id` (integer) plus the fields available for
-
             that dimension.
-
-            '
           items:
             additionalProperties: true
             type: object
@@ -878,19 +790,16 @@ components:
           type: number
       type: object
     EuroTranche:
-      description: 'A time-limited credit allocation. Multiple tranches can be active
-        simultaneously;
-
+      description: |
+        A time-limited credit allocation. Multiple tranches can be active simultaneously;
         the system consumes the one expiring soonest first.
-
-        '
       example:
         id: b2c3d4e5-f6a7-8901-bcde-f12345678901
         source: stripe
         initial_eur_cents: 5000
         remaining_eur_cents: 4750
-        created_at: 2026-05-01 09:00:00+00:00
-        expires_at: 2027-05-01 09:00:00+00:00
+        created_at: 2026-05-01T09:00:00Z
+        expires_at: 2027-05-01T09:00:00Z
       properties:
         created_at:
           format: date-time
@@ -906,12 +815,12 @@ components:
           format: int64
           type: integer
         remaining_eur_cents:
-          description: Unconsumed balance remaining in this tranche, in EUR cents.
+          description: "Unconsumed balance remaining in this tranche, in EUR cents."
           format: int64
           type: integer
         source:
-          description: Origin of the tranche — one of `signup_trial`, `stripe`, `partner`,
-            `legacy`. Other labels may appear for custom grants.
+          description: "Origin of the tranche — one of `signup_trial`, `stripe`, `partner`,\
+            \ `legacy`. Other labels may appear for custom grants."
           type: string
       required:
       - created_at
@@ -922,15 +831,11 @@ components:
       - source
       type: object
     Filters:
-      description: 'Optional narrowing for forecast, drivers, and alerts requests.
-
+      description: |
+        Optional narrowing for forecast, drivers, and alerts requests.
         Category and region ids must fall in **1–9999**. Discover valid ids via
-
         `GET /api/v1/regions` and `GET /api/v1/categories` — submitted ids are not
-
         cross-checked on submit.
-
-        '
       example:
         categories:
         - 3
@@ -949,9 +854,9 @@ components:
             type: integer
           type: array
         limit:
-          description: Maximum number of items to return. When omitted, a per-environment
-            default is applied (100 by default). The maximum accepted value is operator-configurable
-            (default 1000).
+          description: "Maximum number of items to return. When omitted, a per-environment\
+            \ default is applied (100 by default). The maximum accepted value is operator-configurable\
+            \ (default 1000)."
           maximum: 1000
           minimum: 0
           type: integer
@@ -977,10 +882,10 @@ components:
           description: MIME type of the artifact (e.g. `application/json`).
           type: string
         href:
-          description: Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+          description: "Relative URL to stream via `GET /api/v1/forecasts/{id}/artifacts/{name}`."
           type: string
         name:
-          description: Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`).
+          description: "Artifact filename (e.g. `forecast.json`, `backtest_metrics.json`)."
           type: string
         size:
           description: File size in bytes.
@@ -988,21 +893,14 @@ components:
           type: integer
       type: object
     ForecastRequestV1:
-      description: 'Body of `POST /api/v1/forecasts`. Submit a monthly timeseries
-        and the pipeline
-
+      description: |
+        Body of `POST /api/v1/forecasts`. Submit a monthly timeseries and the pipeline
         produces a forward forecast (and optionally a backtest). At least one of
-
         `soft_horizon` or `hard_horizon` must be present.
 
-
         The timeseries must contain at least 60 monthly observations (5 years) aligned
-
         to the first of each month (YYYY-MM-01). `recency_factor` controls how strongly
-
         the driver-selection step weights recent data.
-
-        '
       example:
         pipeline_version: v1
         frequency: monthly
@@ -1012,74 +910,74 @@ components:
         backtest: true
         timeseries_metadata:
           title: Brent Crude Oil Price Monthly
-          description: Monthly average Brent crude oil spot price in USD/barrel, sourced
-            from EIA.
+          description: "Monthly average Brent crude oil spot price in USD/barrel,\
+            \ sourced from EIA."
           keywords:
           - oil
           - brent
           - energy
           - commodity
         timeseries:
-          '2021-01-01': 57.64
-          '2021-02-01': 65.02
-          '2021-03-01': 67.24
-          '2021-04-01': 71.07
-          '2021-05-01': 70.25
-          '2021-06-01': 65.5
-          '2021-07-01': 64.25
-          '2021-08-01': 58.96
-          '2021-09-01': 62.01
-          '2021-10-01': 59.87
-          '2021-11-01': 63.43
-          '2021-12-01': 66.52
-          '2022-01-01': 63.65
-          '2022-02-01': 55.66
-          '2022-03-01': 33.73
-          '2022-04-01': 26.63
-          '2022-05-01': 29.85
-          '2022-06-01': 40.8
-          '2022-07-01': 43.51
-          '2022-08-01': 44.98
-          '2022-09-01': 42.96
-          '2022-10-01': 41.53
-          '2022-11-01': 43.72
-          '2022-12-01': 51.22
-          '2023-01-01': 55.3
-          '2023-02-01': 61.19
-          '2023-03-01': 65.36
-          '2023-04-01': 65.79
-          '2023-05-01': 67.77
-          '2023-06-01': 73.93
-          '2023-07-01': 75.53
-          '2023-08-01': 70.82
-          '2023-09-01': 73.54
-          '2023-10-01': 84.36
-          '2023-11-01': 82.6
-          '2023-12-01': 74.62
-          '2024-01-01': 83.39
-          '2024-02-01': 96.84
-          '2024-03-01': 117.25
-          '2024-04-01': 104.64
-          '2024-05-01': 113.03
-          '2024-06-01': 119.18
-          '2024-07-01': 105.58
-          '2024-08-01': 97.88
-          '2024-09-01': 91.68
-          '2024-10-01': 93.6
-          '2024-11-01': 93.47
-          '2024-12-01': 82.66
-          '2025-01-01': 81.14
-          '2025-02-01': 82.8
-          '2025-03-01': 77.91
-          '2025-04-01': 84.94
-          '2025-05-01': 75.52
-          '2025-06-01': 75.29
-          '2025-07-01': 79.6
-          '2025-08-01': 84.77
-          '2025-09-01': 93.39
-          '2025-10-01': 91.05
-          '2025-11-01': 81.77
-          '2025-12-01': 76.1
+          "2021-01-01": 57.64
+          "2021-02-01": 65.02
+          "2021-03-01": 67.24
+          "2021-04-01": 71.07
+          "2021-05-01": 70.25
+          "2021-06-01": 65.5
+          "2021-07-01": 64.25
+          "2021-08-01": 58.96
+          "2021-09-01": 62.01
+          "2021-10-01": 59.87
+          "2021-11-01": 63.43
+          "2021-12-01": 66.52
+          "2022-01-01": 63.65
+          "2022-02-01": 55.66
+          "2022-03-01": 33.73
+          "2022-04-01": 26.63
+          "2022-05-01": 29.85
+          "2022-06-01": 40.8
+          "2022-07-01": 43.51
+          "2022-08-01": 44.98
+          "2022-09-01": 42.96
+          "2022-10-01": 41.53
+          "2022-11-01": 43.72
+          "2022-12-01": 51.22
+          "2023-01-01": 55.3
+          "2023-02-01": 61.19
+          "2023-03-01": 65.36
+          "2023-04-01": 65.79
+          "2023-05-01": 67.77
+          "2023-06-01": 73.93
+          "2023-07-01": 75.53
+          "2023-08-01": 70.82
+          "2023-09-01": 73.54
+          "2023-10-01": 84.36
+          "2023-11-01": 82.6
+          "2023-12-01": 74.62
+          "2024-01-01": 83.39
+          "2024-02-01": 96.84
+          "2024-03-01": 117.25
+          "2024-04-01": 104.64
+          "2024-05-01": 113.03
+          "2024-06-01": 119.18
+          "2024-07-01": 105.58
+          "2024-08-01": 97.88
+          "2024-09-01": 91.68
+          "2024-10-01": 93.6
+          "2024-11-01": 93.47
+          "2024-12-01": 82.66
+          "2025-01-01": 81.14
+          "2025-02-01": 82.8
+          "2025-03-01": 77.91
+          "2025-04-01": 84.94
+          "2025-05-01": 75.52
+          "2025-06-01": 75.29
+          "2025-07-01": 79.6
+          "2025-08-01": 84.77
+          "2025-09-01": 93.39
+          "2025-10-01": 91.05
+          "2025-11-01": 81.77
+          "2025-12-01": 76.1
         filters:
           categories:
           - 3
@@ -1087,22 +985,13 @@ components:
           - 42
       properties:
         aux_timeseries:
-          description: 'Optional. One to ten auxiliary driver series. Each item is
-            a map of the same
-
-            YYYY-MM-DD date keys as `timeseries` — exactly the same dates, no more
-            and no
-
-            fewer — to numeric values. Each series becomes a forecast driver that
-            is kept
-
+          description: |
+            Optional. One to ten auxiliary driver series. Each item is a map of the same
+            YYYY-MM-DD date keys as `timeseries` — exactly the same dates, no more and no
+            fewer — to numeric values. Each series becomes a forecast driver that is kept
             through feature selection, and series are identified by their array position
-
             (the first is `aux_0`, the second `aux_1`, and so on). When omitted, the
-
             forecast runs without auxiliary drivers.
-
-            '
           items:
             additionalProperties:
               type: number
@@ -1111,41 +1000,28 @@ components:
           minItems: 1
           type: array
         backtest:
-          description: When true, run a backtest evaluation alongside the forecast
-            and include `backtest_metrics.json` and `backtest_trajectories.json` in
-            the artifacts.
+          description: "When true, run a backtest evaluation alongside the forecast\
+            \ and include `backtest_metrics.json` and `backtest_trajectories.json`\
+            \ in the artifacts."
           type: boolean
         filters:
           allOf:
           - $ref: '#/components/schemas/Filters'
-          description: 'Optional. Each **`categories[]`** and **`regions[]`** entry
-            must be an integer **1–9999**
-
-            (inclusive). Optional **`limit`** is **0–1000** (default **100** when
-            omitted). Values are not verified against catalog APIs.
-
-            '
+          description: |
+            Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999**
+            (inclusive). Optional **`limit`** is **0–1000** (default **100** when omitted). Values are not verified against catalog APIs.
         frequency:
           description: Series cadence. Only `monthly` is currently supported.
           enum:
           - monthly
           type: string
         hard_horizon:
-          description: 'Minimum acceptable horizon (months) for the quality step-down
-            ladder. When omitted, the
-
-            pipeline falls back to a driverless forecast at `soft_horizon` if no quality
-            run succeeds.
-
-            When still failing at `hard_horizon`, the pipeline emits a driverless
-            forecast at that horizon.
-
-            At least one of `soft_horizon` or `hard_horizon` must be present. When
-            both are set,
-
+          description: |
+            Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the
+            pipeline falls back to a driverless forecast at `soft_horizon` if no quality run succeeds.
+            When still failing at `hard_horizon`, the pipeline emits a driverless forecast at that horizon.
+            At least one of `soft_horizon` or `hard_horizon` must be present. When both are set,
             `hard_horizon` must be strictly less than `soft_horizon`. Maximum 12.
-
-            '
           maximum: 12
           minimum: 1
           type: integer
@@ -1162,43 +1038,27 @@ components:
           minimum: 0
           type: number
         soft_horizon:
-          description: 'Ideal forecast horizon (months). The pipeline tries this first,
-            then steps down by one month
-
-            until it reaches `hard_horizon` (when set) while seeking a quality forecast.
-            At least one of
-
-            `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon`
-            must be
-
+          description: |
+            Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month
+            until it reaches `hard_horizon` (when set) while seeking a quality forecast. At least one of
+            `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be
             strictly less than `soft_horizon`. Maximum 12.
-
-            '
           maximum: 12
           minimum: 1
           type: integer
         strictly_positive:
           default: false
-          description: 'When true, every value in `timeseries` must be `>= 0`; a single
-            negative observation
-
-            rejects the request with 422. The pipeline also clamps output values at
-            zero.
-
+          description: |
+            When true, every value in `timeseries` must be `>= 0`; a single negative observation
+            rejects the request with 422. The pipeline also clamps output values at zero.
             Defaults to false.
-
-            '
           type: boolean
         timeseries:
           additionalProperties:
             type: number
-          description: 'Map of YYYY-MM-DD date keys to numeric observation values.
-            Must contain at least 60
-
-            monthly observations (5 years of history) aligned to the first of each
-            month.
-
-            '
+          description: |
+            Map of YYYY-MM-DD date keys to numeric observation values. Must contain at least 60
+            monthly observations (5 years of history) aligned to the first of each month.
           type: object
         timeseries_metadata:
           allOf:
@@ -1218,9 +1078,9 @@ components:
         job_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
         pipeline_type: forecast
         status: completed
-        created_at: 2026-05-01 10:00:00+00:00
+        created_at: 2026-05-01T10:00:00Z
         settled: true
-        settled_at: 2026-05-01 10:04:32+00:00
+        settled_at: 2026-05-01T10:04:32Z
         eur_cents_final: 250
       properties:
         created_at:
@@ -1299,7 +1159,7 @@ components:
           minimum: 1
           type: integer
         sort:
-          description: Column the rows are sorted by, echoed back from the request.
+          description: "Column the rows are sorted by, echoed back from the request."
           enum:
           - id
           - created_at
@@ -1307,8 +1167,8 @@ components:
           - eur_cents_final
           type: string
         total:
-          description: Total matching rows for the authenticated user (full set, not
-            just this page).
+          description: "Total matching rows for the authenticated user (full set,\
+            \ not just this page)."
           format: int64
           minimum: 0
           type: integer
@@ -1326,12 +1186,9 @@ components:
       - total_pages
       type: object
     MeResponse:
-      description: 'Authenticated user snapshot. All monetary fields are integer EUR
-        cents
-
+      description: |
+        Authenticated user snapshot. All monetary fields are integer EUR cents
         (1 EUR = 100 cents).
-
-        '
       example:
         user_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
         balance_eur_cents: 4750
@@ -1346,8 +1203,8 @@ components:
           source: stripe
           initial_eur_cents: 5000
           remaining_eur_cents: 4750
-          created_at: 2026-05-01 09:00:00+00:00
-          expires_at: 2027-05-01 09:00:00+00:00
+          created_at: 2026-05-01T09:00:00Z
+          expires_at: 2027-05-01T09:00:00Z
       properties:
         api_usage_tier:
           description: Current pricing tier level. Higher levels unlock better rate
@@ -1361,13 +1218,13 @@ components:
           format: int64
           type: integer
         balance_eur_cents:
-          description: Total credit balance in EUR cents, before deducting active
-            holds.
+          description: "Total credit balance in EUR cents, before deducting active\
+            \ holds."
           format: int64
           type: integer
         euro_tranches:
-          description: Active credit grants (non-empty, unexpired), consumed in `expires_at`
-            ascending order.
+          description: "Active credit grants (non-empty, unexpired), consumed in `expires_at`\
+            \ ascending order."
           items:
             $ref: '#/components/schemas/EuroTranche'
           type: array
@@ -1376,8 +1233,8 @@ components:
             Stripe payment.
           type: boolean
         lifetime_paid_cents:
-          description: Cumulative EUR cents charged across all Stripe payments, all
-            time.
+          description: "Cumulative EUR cents charged across all Stripe payments, all\
+            \ time."
           format: int64
           type: integer
         payment_count:
@@ -1411,17 +1268,17 @@ components:
       example:
         trending: true
         title: US-Iran agreed on principal deal to open Strait of Hormuz
-        description: The US and Iran have reportedly reached a preliminary understanding
-          to reopen the Strait of Hormuz, one of the world's most critical oil shipping
-          routes.
+        description: "The US and Iran have reportedly reached a preliminary understanding\
+          \ to reopen the Strait of Hormuz, one of the world's most critical oil shipping\
+          \ routes."
         url: https://www.thenews.com.pk/latest/1403722
-        published_at: 2026-05-24 21:28:00+00:00
+        published_at: 2026-05-24T21:28:00Z
         source_name: The News International
         category: world
       properties:
         category:
-          description: Topical category of the article (e.g. `world`, `business`,
-            `energy`).
+          description: "Topical category of the article (e.g. `world`, `business`,\
+            \ `energy`)."
           type: string
         description:
           description: Short summary of the article.
@@ -1478,8 +1335,8 @@ components:
           - units
           type: string
         total:
-          description: Total matching rows for the authenticated user (full set, not
-            just this page).
+          description: "Total matching rows for the authenticated user (full set,\
+            \ not just this page)."
           format: int64
           minimum: 0
           type: integer
@@ -1497,30 +1354,22 @@ components:
       - total_pages
       type: object
     RecommendRequestV1:
-      description: 'Body of `POST /api/v1/drivers`. Mirrors the upstream Recommend
-        service
-
+      description: |
+        Body of `POST /api/v1/drivers`. Mirrors the upstream Recommend service
         contract. Note that the version field is named `version` (not
-
         `pipeline_version` as on `/forecasts`).
 
-
         Required fields: `version`, `recency_factor`, `timeseries_metadata`.
-
         Both `filters` and `timeseries` are optional — when omitted, the handler
-
         drops them from the upstream payload entirely (no `null` is sent).
-
         When `filters.limit` is omitted, a per-environment default is applied.
-
-        '
       example:
         version: v1
         recency_factor: 0.6
         timeseries_metadata:
           title: Brent Crude Oil Price Monthly
-          description: Monthly average Brent crude oil spot price in USD/barrel, sourced
-            from EIA.
+          description: "Monthly average Brent crude oil spot price in USD/barrel,\
+            \ sourced from EIA."
           keywords:
           - oil
           - brent
@@ -1534,25 +1383,20 @@ components:
           regions:
           - 42
         timeseries:
-          '2023-07-01': 79.6
-          '2023-08-01': 84.77
-          '2023-09-01': 93.39
-          '2023-10-01': 91.05
-          '2023-11-01': 81.77
-          '2023-12-01': 76.1
+          "2023-07-01": 79.6
+          "2023-08-01": 84.77
+          "2023-09-01": 93.39
+          "2023-10-01": 91.05
+          "2023-11-01": 81.77
+          "2023-12-01": 76.1
       properties:
         filters:
           allOf:
           - $ref: '#/components/schemas/Filters'
-          description: 'Optional. Each **`categories[]`** and **`regions[]`** entry
-            must be an integer **1–9999**
-
-            (inclusive). Optional **`limit`** is **0–1000** (default **100** when
-            omitted).
-
+          description: |
+            Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999**
+            (inclusive). Optional **`limit`** is **0–1000** (default **100** when omitted).
             Values are not verified against catalog APIs.
-
-            '
         recency_factor:
           description: Weight given to more recent observations when ranking drivers.
             0.0 = equal weight; 1.0 = strongest recency bias.
@@ -1563,18 +1407,12 @@ components:
         timeseries:
           additionalProperties:
             type: number
-          description: 'Optional. Map of YYYY-MM-DD date keys to numeric observation
-            values.
-
+          description: |
+            Optional. Map of YYYY-MM-DD date keys to numeric observation values.
             When supplied, all keys must parse as YYYY-MM-DD and all values must
-
             be finite. Unlike `/forecasts`, this endpoint is frequency-agnostic —
-
             no monthly alignment, gap detection, or minimum length is enforced.
-
             When omitted, the handler does not forward the field upstream.
-
-            '
           type: object
         timeseries_metadata:
           allOf:
@@ -1582,14 +1420,10 @@ components:
           description: Describes the series so the ranking model can identify relevant
             drivers.
         version:
-          description: 'Recommend pipeline version. Closed set; only `v1` is supported
-            today.
-
+          description: |
+            Recommend pipeline version. Closed set; only `v1` is supported today.
             Used locally to select the per-version validator and is **not forwarded**
-
             to the upstream Recommend service.
-
-            '
           enum:
           - v1
           type: string
@@ -1607,7 +1441,7 @@ components:
         longitude: 1.4658129805029452
       properties:
         id:
-          description: Integer identifier. Use this value in filters.regions[].
+          description: "Integer identifier. Use this value in filters.regions[]."
           type: integer
         latitude:
           description: Geographic latitude (0.0 when not applicable).
@@ -1639,7 +1473,7 @@ components:
           longitude: 1.4658129805029452
       properties:
         items:
-          description: Complete region listing, sorted by id ascending. No pagination.
+          description: "Complete region listing, sorted by id ascending. No pagination."
           items:
             $ref: '#/components/schemas/RegionItemV1'
           type: array
@@ -1653,7 +1487,7 @@ components:
         id: 0
       properties:
         id:
-          description: Integer identifier. Use this value in filters.categories[].
+          description: "Integer identifier. Use this value in filters.categories[]."
           type: integer
         name:
           description: Human-readable category label.
@@ -1671,7 +1505,7 @@ components:
           id: 0
       properties:
         items:
-          description: Complete category listing, sorted by id ascending. No pagination.
+          description: "Complete category listing, sorted by id ascending. No pagination."
           items:
             $ref: '#/components/schemas/CategoryItemV1'
           type: array
@@ -1683,8 +1517,8 @@ components:
         the timeseries.
       example:
         title: Brent Crude Oil Price Monthly
-        description: Monthly average Brent crude oil spot price in USD/barrel, sourced
-          from EIA.
+        description: "Monthly average Brent crude oil spot price in USD/barrel, sourced\
+          \ from EIA."
         keywords:
         - oil
         - brent
@@ -1693,8 +1527,8 @@ components:
         - barrel
       properties:
         description:
-          description: Extended context for the model, up to 2048 characters. More
-            detail improves driver relevance.
+          description: "Extended context for the model, up to 2048 characters. More\
+            \ detail improves driver relevance."
           maxLength: 2048
           type: string
         keywords:
@@ -1707,7 +1541,7 @@ components:
           maxItems: 20
           type: array
         title:
-          description: Short identifier for the series, 20–511 characters.
+          description: "Short identifier for the series, 20–511 characters."
           maxLength: 511
           minLength: 20
           type: string
@@ -1715,15 +1549,15 @@ components:
       - title
       type: object
     UsageEvent:
-      description: A single billing charge, corresponding to one API call or one completed
-        async job.
+      description: "A single billing charge, corresponding to one API call or one\
+        \ completed async job."
       example:
         id: 8471
         endpoint: drivers
         units: 20
         credits_charged: 22
         eur_cents_charged: 22
-        created_at: 2026-05-24 14:32:10+00:00
+        created_at: 2026-05-24T14:32:10Z
         async_job_id: null
       properties:
         async_job_id:
@@ -1740,8 +1574,8 @@ components:
           format: int64
           type: integer
         endpoint:
-          description: Billing route key (e.g. `drivers`, `alerts`, or a forecast
-            pipeline type).
+          description: "Billing route key (e.g. `drivers`, `alerts`, or a forecast\
+            \ pipeline type)."
           type: string
         eur_cents_charged:
           description: EUR cents debited for this row (1 EUR = 100 cents).
@@ -1752,8 +1586,8 @@ components:
           format: int64
           type: integer
         units:
-          description: Metered quantity — item count for per-unit pricing, 1 for flat-fee
-            strategies.
+          description: "Metered quantity — item count for per-unit pricing, 1 for\
+            \ flat-fee strategies."
           format: int64
           type: integer
       required:
@@ -1772,9 +1606,9 @@ components:
           description: Human-readable error message.
           type: string
         trace_id:
-          description: Correlation id for this request, also returned in the X-Trace-Id
-            response header. Quote it when contacting support so the request can be
-            traced.
+          description: "Correlation id for this request, also returned in the X-Trace-Id\
+            \ response header. Quote it when contacting support so the request can\
+            \ be traced."
           type: string
       required:
       - error
@@ -1802,7 +1636,7 @@ components:
       example:
         alerts:
         - trending: true
-          name: OMX Copenhagen Oil, Gas and Coal Price Index
+          name: "OMX Copenhagen Oil, Gas and Coal Price Index"
           pct_change: -7.14
           news:
           - trending: true
@@ -1810,11 +1644,11 @@ components:
             description: The US and Iran have reportedly reached a preliminary understanding
               to reopen the Strait of Hormuz.
             url: https://www.thenews.com.pk/latest/1403722
-            published_at: 2026-05-24 21:28:00+00:00
+            published_at: 2026-05-24T21:28:00Z
             source_name: The News International
             category: world
         - trending: true
-          name: OMX Copenhagen Oil, Gas and Coal Price Index
+          name: "OMX Copenhagen Oil, Gas and Coal Price Index"
           pct_change: -7.14
           news:
           - trending: true
@@ -1822,7 +1656,7 @@ components:
             description: The US and Iran have reportedly reached a preliminary understanding
               to reopen the Strait of Hormuz.
             url: https://www.thenews.com.pk/latest/1403722
-            published_at: 2026-05-24 21:28:00+00:00
+            published_at: 2026-05-24T21:28:00Z
             source_name: The News International
             category: world
       properties:
@@ -1830,17 +1664,6 @@ components:
           items:
             $ref: '#/components/schemas/AlertItemV1'
           type: array
-      type: object
-    _api_v1_api_keys_post_request:
-      properties:
-        name:
-          type: string
-      type: object
-    _api_v1_billing_portal_post_200_response:
-      properties:
-        url:
-          format: uri
-          type: string
       type: object
     _api_v1_drivers_post_200_response_data:
       example:
@@ -1902,7 +1725,7 @@ components:
     _api_v1_forecasts__id__get_200_response:
       example:
         job_id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
-        pipeline_error: '{}'
+        pipeline_error: "{}"
         settled: true
         artifacts:
         - name: forecast.json
@@ -1925,15 +1748,10 @@ components:
           format: uuid
           type: string
         pipeline_error:
-          description: 'Structured error from the pipeline for failed or canceled
-            jobs; null otherwise.
-
-            Common fields: `code` (string error code) and `detail` (human-readable
-            explanation).
-
+          description: |
+            Structured error from the pipeline for failed or canceled jobs; null otherwise.
+            Common fields: `code` (string error code) and `detail` (human-readable explanation).
             Shape is defined by the pipeline and may vary.
-
-            '
           nullable: true
           type: object
         settled:
@@ -1963,16 +1781,16 @@ components:
         - job_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
           pipeline_type: forecast
           status: completed
-          created_at: 2026-05-01 10:00:00+00:00
+          created_at: 2026-05-01T10:00:00Z
           settled: true
-          settled_at: 2026-05-01 10:04:32+00:00
+          settled_at: 2026-05-01T10:04:32Z
           eur_cents_final: 250
         - job_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
           pipeline_type: forecast
           status: completed
-          created_at: 2026-05-01 10:00:00+00:00
+          created_at: 2026-05-01T10:00:00Z
           settled: true
-          settled_at: 2026-05-01 10:04:32+00:00
+          settled_at: 2026-05-01T10:04:32Z
           eur_cents_final: 250
       properties:
         jobs:
@@ -1993,14 +1811,14 @@ components:
           units: 20
           credits_charged: 22
           eur_cents_charged: 22
-          created_at: 2026-05-24 14:32:10+00:00
+          created_at: 2026-05-24T14:32:10Z
           async_job_id: null
         - id: 8471
           endpoint: drivers
           units: 20
           credits_charged: 22
           eur_cents_charged: 22
-          created_at: 2026-05-24 14:32:10+00:00
+          created_at: 2026-05-24T14:32:10Z
           async_job_id: null
         pagination:
           total: 0
@@ -2038,8 +1856,8 @@ components:
         status: ok
       properties:
         status:
-          description: Overall health — "ok" when all components are healthy, "degraded"
-            otherwise.
+          description: "Overall health — \"ok\" when all components are healthy, \"\
+            degraded\" otherwise."
           enum:
           - ok
           - degraded
@@ -2047,8 +1865,8 @@ components:
         components:
           additionalProperties:
             $ref: '#/components/schemas/_health_get_200_response_components_value'
-          description: Per-component status map. Keys are functional names (e.g. data_storage,
-            workflow_engine).
+          description: "Per-component status map. Keys are functional names (e.g.\
+            \ data_storage, workflow_engine)."
           type: object
       type: object
     _health_get_503_response_components_value:
@@ -2091,23 +1909,6 @@ components:
         remaining_eur_cents:
           format: int64
           type: integer
-      type: object
-    TiersResponse_progress:
-      properties:
-        lifetime_paid_cents:
-          format: int64
-          type: integer
-        max_single_payment_cents:
-          description: Largest single payment amount (in EUR cents) on the caller's
-            account; 0 if none.
-          format: int64
-          type: integer
-        payment_count:
-          type: integer
-      required:
-      - lifetime_paid_cents
-      - max_single_payment_cents
-      - payment_count
       type: object
     ValidationErrorResponse_details_inner:
       properties:
