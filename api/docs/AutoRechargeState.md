@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**BelowEurCents** | **int64** | When the available balance drops below this many EUR cents, recharge fires. | 
-**Enabled** | **bool** |  | 
-**HasStripeCustomer** | **bool** | Whether a Stripe customer id is stored (required for auto-recharge to run) | 
-**MeterCents** | **int64** |  | 
-**MeterMonth** | Pointer to **NullableString** | UTC month start for meter_cents, if any charges recorded this month | [optional] 
-**MonthlyCapCents** | **int64** | EUR cents charged via auto-recharge per UTC calendar month; 0 &#x3D; no cap | 
-**TargetEurCents** | **int64** | Target balance to reach after a recharge, in EUR cents. | 
+**BelowEurCents** | **int64** | When the available balance drops below this many EUR cents, a recharge is triggered. | 
+**Enabled** | **bool** | Whether auto-recharge is active for this account. | 
+**HasStripeCustomer** | **bool** | Whether a Stripe customer record exists (required for auto-recharge to run). | 
+**MeterCents** | **int64** | EUR cents charged via auto-recharge in the current UTC calendar month. | 
+**MeterMonth** | Pointer to **NullableString** | UTC month start for &#x60;meter_cents&#x60;; null if no auto-recharge has run this month. | [optional] 
+**MonthlyCapCents** | **int64** | Maximum EUR cents that may be charged via auto-recharge per UTC calendar month. 0 &#x3D; no cap. | 
+**TargetEurCents** | **int64** | Balance target after a successful recharge, in EUR cents. | 
 
 ## Methods
 

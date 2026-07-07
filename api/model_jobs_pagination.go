@@ -21,11 +21,17 @@ var _ MappedNullable = &JobsPagination{}
 
 // JobsPagination struct for JobsPagination
 type JobsPagination struct {
+	// Page size echoed back from the request.
 	Limit int32 `json:"limit"`
+	// Sort direction echoed back from the request.
 	Order string `json:"order"`
+	// 1-indexed current page number echoed back from the request.
 	Page int32 `json:"page"`
+	// Column the rows are sorted by, echoed back from the request.
 	Sort string `json:"sort"`
+	// Total matching rows for the authenticated user (full set, not just this page).
 	Total int64 `json:"total"`
+	// ceil(total / limit). Zero when total is zero.
 	TotalPages int64 `json:"total_pages"`
 }
 

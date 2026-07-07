@@ -4,14 +4,15 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ApiUsageTier** | **int32** |  | 
+**ApiUsageTier** | **int32** | Current pricing tier level. Higher levels unlock better rate limits and job concurrency. | 
 **AutoRecharge** | Pointer to [**AutoRechargeState**](AutoRechargeState.md) |  | [optional] 
-**AvailableEurCents** | **int64** | balance_eur_cents minus active holds for in-flight async jobs. | 
-**BalanceEurCents** | **int64** | Ledger sum exposed as EUR cents. | 
-**EuroTranches** | [**[]EuroTranche**](EuroTranche.md) | Active grants (non-empty, unexpired). Consumed in expires_at ascending order. | 
-**HasEverPaid** | **bool** |  | 
-**LifetimePaidCents** | **int64** |  | 
-**PaymentCount** | **int32** |  | 
+**AvailableEurCents** | **int64** | Spendable balance in EUR cents — &#x60;balance_eur_cents&#x60; minus any credits held for in-flight async jobs. | 
+**BalanceEurCents** | **int64** | Total credit balance in EUR cents, before deducting active holds. | 
+**EuroTranches** | [**[]EuroTranche**](EuroTranche.md) | Active credit grants (non-empty, unexpired), consumed in &#x60;expires_at&#x60; ascending order. | 
+**HasEverPaid** | **bool** | True once the account has completed at least one successful Stripe payment. | 
+**LifetimePaidCents** | **int64** | Cumulative EUR cents charged across all Stripe payments, all time. | 
+**PaymentCount** | **int32** | Total number of successful Stripe payments on this account. | 
+**Role** | **string** | Account role. &#x60;admin&#x60; accounts can sign in to the staff back-office; regular accounts are &#x60;user&#x60;. | 
 **SignupTrial** | Pointer to [**NullableMeResponseSignupTrial**](MeResponseSignupTrial.md) |  | [optional] 
 **UserId** | **string** |  | 
 
@@ -19,7 +20,7 @@ Name | Type | Description | Notes
 
 ### NewMeResponse
 
-`func NewMeResponse(apiUsageTier int32, availableEurCents int64, balanceEurCents int64, euroTranches []EuroTranche, hasEverPaid bool, lifetimePaidCents int64, paymentCount int32, userId string, ) *MeResponse`
+`func NewMeResponse(apiUsageTier int32, availableEurCents int64, balanceEurCents int64, euroTranches []EuroTranche, hasEverPaid bool, lifetimePaidCents int64, paymentCount int32, role string, userId string, ) *MeResponse`
 
 NewMeResponse instantiates a new MeResponse object
 This constructor will assign default values to properties that have it defined,
@@ -197,6 +198,26 @@ and a boolean to check if the value has been set.
 `func (o *MeResponse) SetPaymentCount(v int32)`
 
 SetPaymentCount sets PaymentCount field to given value.
+
+
+### GetRole
+
+`func (o *MeResponse) GetRole() string`
+
+GetRole returns the Role field if non-nil, zero value otherwise.
+
+### GetRoleOk
+
+`func (o *MeResponse) GetRoleOk() (*string, bool)`
+
+GetRoleOk returns a tuple with the Role field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRole
+
+`func (o *MeResponse) SetRole(v string)`
+
+SetRole sets Role field to given value.
 
 
 ### GetSignupTrial

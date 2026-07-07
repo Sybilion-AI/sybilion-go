@@ -12,6 +12,7 @@ package sybilionapi
 
 import (
 	"encoding/json"
+	"bytes"
 	"fmt"
 )
 
@@ -23,12 +24,11 @@ type RegionItemV1 struct {
 	// Integer identifier. Use this value in filters.regions[].
 	Id int32 `json:"id"`
 	// Geographic latitude (0.0 when not applicable).
-	Latitude *float64 `json:"latitude,omitempty"`
+	Latitude float64 `json:"latitude"`
 	// Geographic longitude (0.0 when not applicable).
-	Longitude *float64 `json:"longitude,omitempty"`
+	Longitude float64 `json:"longitude"`
 	// Human-readable region label.
 	Name string `json:"name"`
-	AdditionalProperties map[string]interface{}
 }
 
 type _RegionItemV1 RegionItemV1
@@ -37,13 +37,11 @@ type _RegionItemV1 RegionItemV1
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRegionItemV1(id int32, name string) *RegionItemV1 {
+func NewRegionItemV1(id int32, latitude float64, longitude float64, name string) *RegionItemV1 {
 	this := RegionItemV1{}
 	this.Id = id
-	var latitude float64 = 0.0
-	this.Latitude = &latitude
-	var longitude float64 = 0.0
-	this.Longitude = &longitude
+	this.Latitude = latitude
+	this.Longitude = longitude
 	this.Name = name
 	return &this
 }
@@ -53,10 +51,6 @@ func NewRegionItemV1(id int32, name string) *RegionItemV1 {
 // but it doesn't guarantee that properties required by API are set
 func NewRegionItemV1WithDefaults() *RegionItemV1 {
 	this := RegionItemV1{}
-	var latitude float64 = 0.0
-	this.Latitude = &latitude
-	var longitude float64 = 0.0
-	this.Longitude = &longitude
 	return &this
 }
 
@@ -84,68 +78,52 @@ func (o *RegionItemV1) SetId(v int32) {
 	o.Id = v
 }
 
-// GetLatitude returns the Latitude field value if set, zero value otherwise.
+// GetLatitude returns the Latitude field value
 func (o *RegionItemV1) GetLatitude() float64 {
-	if o == nil || IsNil(o.Latitude) {
+	if o == nil {
 		var ret float64
 		return ret
 	}
-	return *o.Latitude
+
+	return o.Latitude
 }
 
-// GetLatitudeOk returns a tuple with the Latitude field value if set, nil otherwise
+// GetLatitudeOk returns a tuple with the Latitude field value
 // and a boolean to check if the value has been set.
 func (o *RegionItemV1) GetLatitudeOk() (*float64, bool) {
-	if o == nil || IsNil(o.Latitude) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Latitude, true
+	return &o.Latitude, true
 }
 
-// HasLatitude returns a boolean if a field has been set.
-func (o *RegionItemV1) HasLatitude() bool {
-	if o != nil && !IsNil(o.Latitude) {
-		return true
-	}
-
-	return false
-}
-
-// SetLatitude gets a reference to the given float64 and assigns it to the Latitude field.
+// SetLatitude sets field value
 func (o *RegionItemV1) SetLatitude(v float64) {
-	o.Latitude = &v
+	o.Latitude = v
 }
 
-// GetLongitude returns the Longitude field value if set, zero value otherwise.
+// GetLongitude returns the Longitude field value
 func (o *RegionItemV1) GetLongitude() float64 {
-	if o == nil || IsNil(o.Longitude) {
+	if o == nil {
 		var ret float64
 		return ret
 	}
-	return *o.Longitude
+
+	return o.Longitude
 }
 
-// GetLongitudeOk returns a tuple with the Longitude field value if set, nil otherwise
+// GetLongitudeOk returns a tuple with the Longitude field value
 // and a boolean to check if the value has been set.
 func (o *RegionItemV1) GetLongitudeOk() (*float64, bool) {
-	if o == nil || IsNil(o.Longitude) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Longitude, true
+	return &o.Longitude, true
 }
 
-// HasLongitude returns a boolean if a field has been set.
-func (o *RegionItemV1) HasLongitude() bool {
-	if o != nil && !IsNil(o.Longitude) {
-		return true
-	}
-
-	return false
-}
-
-// SetLongitude gets a reference to the given float64 and assigns it to the Longitude field.
+// SetLongitude sets field value
 func (o *RegionItemV1) SetLongitude(v float64) {
-	o.Longitude = &v
+	o.Longitude = v
 }
 
 // GetName returns the Name field value
@@ -183,18 +161,9 @@ func (o RegionItemV1) MarshalJSON() ([]byte, error) {
 func (o RegionItemV1) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
-	if !IsNil(o.Latitude) {
-		toSerialize["latitude"] = o.Latitude
-	}
-	if !IsNil(o.Longitude) {
-		toSerialize["longitude"] = o.Longitude
-	}
+	toSerialize["latitude"] = o.Latitude
+	toSerialize["longitude"] = o.Longitude
 	toSerialize["name"] = o.Name
-
-	for key, value := range o.AdditionalProperties {
-		toSerialize[key] = value
-	}
-
 	return toSerialize, nil
 }
 
@@ -204,6 +173,8 @@ func (o *RegionItemV1) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"id",
+		"latitude",
+		"longitude",
 		"name",
 	}
 
@@ -223,23 +194,15 @@ func (o *RegionItemV1) UnmarshalJSON(data []byte) (err error) {
 
 	varRegionItemV1 := _RegionItemV1{}
 
-	err = json.Unmarshal(data, &varRegionItemV1)
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varRegionItemV1)
 
 	if err != nil {
 		return err
 	}
 
 	*o = RegionItemV1(varRegionItemV1)
-
-	additionalProperties := make(map[string]interface{})
-
-	if err = json.Unmarshal(data, &additionalProperties); err == nil {
-		delete(additionalProperties, "id")
-		delete(additionalProperties, "latitude")
-		delete(additionalProperties, "longitude")
-		delete(additionalProperties, "name")
-		o.AdditionalProperties = additionalProperties
-	}
 
 	return err
 }

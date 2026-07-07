@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Description** | Pointer to **string** |  | [optional] 
-**Keywords** | Pointer to **[]string** |  | [optional] 
-**Title** | **string** |  | 
+**Description** | Pointer to **string** | Extended context for the model, up to 2048 characters. More detail improves driver relevance. | [optional] 
+**Keywords** | Pointer to **[]string** | Up to 20 semantic tags that help anchor the search to relevant datasets. | [optional] 
+**Title** | **string** | Short identifier for the series, 20–511 characters. | 
 
 ## Methods
 

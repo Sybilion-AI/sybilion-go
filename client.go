@@ -120,7 +120,7 @@ func (c *Client) GetForecastArtifact(ctx context.Context, id, name string) (*os.
 
 // GetDrivers retrieves drivers ranked by explanatory power (synchronous, billed).
 func (c *Client) GetDrivers(ctx context.Context, req api.RecommendRequestV1) (*http.Response, error) {
-	resp, err := c.raw.DefaultAPI.ApiV1DriversPost(ctx).RecommendRequestV1(req).Execute()
+	_, resp, err := c.raw.DefaultAPI.ApiV1DriversPost(ctx).RecommendRequestV1(req).Execute()
 	return resp, parseAPIError(err)
 }
 

@@ -1,49 +1,54 @@
-# HealthResponse
+# HealthGet503ResponseComponentsValue
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Status** | **string** | Overall system status. | 
+**Status** | Pointer to **string** |  | [optional] 
 
 ## Methods
 
-### NewHealthResponse
+### NewHealthGet503ResponseComponentsValue
 
-`func NewHealthResponse(status string, ) *HealthResponse`
+`func NewHealthGet503ResponseComponentsValue() *HealthGet503ResponseComponentsValue`
 
-NewHealthResponse instantiates a new HealthResponse object
+NewHealthGet503ResponseComponentsValue instantiates a new HealthGet503ResponseComponentsValue object
 This constructor will assign default values to properties that have it defined,
 and makes sure properties required by API are set, but the set of arguments
 will change when the set of required properties is changed
 
-### NewHealthResponseWithDefaults
+### NewHealthGet503ResponseComponentsValueWithDefaults
 
-`func NewHealthResponseWithDefaults() *HealthResponse`
+`func NewHealthGet503ResponseComponentsValueWithDefaults() *HealthGet503ResponseComponentsValue`
 
-NewHealthResponseWithDefaults instantiates a new HealthResponse object
+NewHealthGet503ResponseComponentsValueWithDefaults instantiates a new HealthGet503ResponseComponentsValue object
 This constructor will only assign default values to properties that have it defined,
 but it doesn't guarantee that properties required by API are set
 
 ### GetStatus
 
-`func (o *HealthResponse) GetStatus() string`
+`func (o *HealthGet503ResponseComponentsValue) GetStatus() string`
 
 GetStatus returns the Status field if non-nil, zero value otherwise.
 
 ### GetStatusOk
 
-`func (o *HealthResponse) GetStatusOk() (*string, bool)`
+`func (o *HealthGet503ResponseComponentsValue) GetStatusOk() (*string, bool)`
 
 GetStatusOk returns a tuple with the Status field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetStatus
 
-`func (o *HealthResponse) SetStatus(v string)`
+`func (o *HealthGet503ResponseComponentsValue) SetStatus(v string)`
 
 SetStatus sets Status field to given value.
 
+### HasStatus
+
+`func (o *HealthGet503ResponseComponentsValue) HasStatus() bool`
+
+HasStatus returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

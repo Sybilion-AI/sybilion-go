@@ -20,14 +20,16 @@ import (
 // checks if the EuroTranche type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &EuroTranche{}
 
-// EuroTranche struct for EuroTranche
+// EuroTranche A time-limited credit allocation. Multiple tranches can be active simultaneously; the system consumes the one expiring soonest first. 
 type EuroTranche struct {
 	CreatedAt time.Time `json:"created_at"`
 	ExpiresAt time.Time `json:"expires_at"`
 	Id string `json:"id"`
+	// Original size of this tranche in EUR cents.
 	InitialEurCents int64 `json:"initial_eur_cents"`
+	// Unconsumed balance remaining in this tranche, in EUR cents.
 	RemainingEurCents int64 `json:"remaining_eur_cents"`
-	// One of signup_trial, stripe, partner, legacy. Other labels may appear for custom grants.
+	// Origin of the tranche — one of `signup_trial`, `stripe`, `partner`, `legacy`. Other labels may appear for custom grants.
 	Source string `json:"source"`
 }
 

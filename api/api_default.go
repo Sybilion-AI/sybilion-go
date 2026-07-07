@@ -24,6 +24,141 @@ import (
 // DefaultAPIService DefaultAPI service
 type DefaultAPIService service
 
+type ApiApiV1AlertsPostRequest struct {
+	ctx context.Context
+	ApiService *DefaultAPIService
+	alertsRequestV1 *AlertsRequestV1
+}
+
+func (r ApiApiV1AlertsPostRequest) AlertsRequestV1(alertsRequestV1 AlertsRequestV1) ApiApiV1AlertsPostRequest {
+	r.alertsRequestV1 = &alertsRequestV1
+	return r
+}
+
+func (r ApiApiV1AlertsPostRequest) Execute() (*ApiV1AlertsPost200Response, *http.Response, error) {
+	return r.ApiService.ApiV1AlertsPostExecute(r)
+}
+
+/*
+ApiV1AlertsPost Detect anomaly alerts for your timeseries
+
+Finds alerts related to the provided metadata.
+
+This is a synchronous billed endpoint — you are charged per alert returned.
+No charge is recorded on validation errors or upstream failures.
+
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiApiV1AlertsPostRequest
+*/
+func (a *DefaultAPIService) ApiV1AlertsPost(ctx context.Context) ApiApiV1AlertsPostRequest {
+	return ApiApiV1AlertsPostRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ApiV1AlertsPost200Response
+func (a *DefaultAPIService) ApiV1AlertsPostExecute(r ApiApiV1AlertsPostRequest) (*ApiV1AlertsPost200Response, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ApiV1AlertsPost200Response
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DefaultAPIService.ApiV1AlertsPost")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/alerts"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.alertsRequestV1 == nil {
+		return localVarReturnValue, nil, reportError("alertsRequestV1 is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.alertsRequestV1
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 422 {
+			var v ValidationErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ErrorMessage
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiApiV1CategoriesGetRequest struct {
 	ctx context.Context
 	ApiService *DefaultAPIService
@@ -151,39 +286,19 @@ func (r ApiApiV1DriversPostRequest) RecommendRequestV1(recommendRequestV1 Recomm
 	return r
 }
 
-func (r ApiApiV1DriversPostRequest) Execute() (*http.Response, error) {
+func (r ApiApiV1DriversPostRequest) Execute() (*ApiV1DriversPost200Response, *http.Response, error) {
 	return r.ApiService.ApiV1DriversPostExecute(r)
 }
 
 /*
-ApiV1DriversPost Recommend ranked driver-dataset candidates (synchronous proxy)
+ApiV1DriversPost Rank driver datasets for your timeseries
 
-Validates the request with the per-version recommend validator and proxies
-it to the upstream Recommend service. The response from the upstream is
-passed through verbatim (status code, body, content type), so any 4xx
-validation error from the upstream is visible to the caller.
+Retrieves drivers ranked by how well they explain your timeseries, returning
+a scored list of potential economic drivers. Results are ordered by relevance
+score descending.
 
-This is a synchronous billed endpoint: charged only on a successful
-upstream response. Cost scales with the number of items returned plus a
-fixed base fee.
-
-- 402 if the user's available credit balance is below the per-call base
-  fee (`base` field of the `drivers` pricing spec). The handler does
-  not run and no upstream call is made. (Note: the user-facing balance
-  on `GET /api/v1/me` is exposed as `available_eur_cents`; pricing and
-  the 402 pre-check are evaluated internally in credits.)
-- On any 2xx, the charge is `rate * len(data.drivers[]) + base`,
-  where `data.drivers[]` is the array nested inside the upstream
-  Recommend service's envelope
-  (`{"status":..,"message":..,"data":{"drivers":[...]}}`). Example
-  spec: `{"drivers":{"type":"per_unit","metric":"drivers_items_returned","rate":1,"base":1}}`
-  (one credit per returned driver, plus a one-credit base fee). To
-  collapse pricing to a flat fee swap the entry for
-  `{"drivers":{"type":"flat_fee","credits":1}}`.
-- On any non-2xx (validation 422, upstream 5xx, transport 502), no charge is recorded.
-- Retries with the same `X-Request-ID` are idempotent on the ledger.
-
-Returns 503 when `RECOMMEND_API_KEY` is not configured.
+This is a synchronous billed endpoint — you are charged per driver returned.
+No charge is recorded on validation errors or upstream failures.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -197,16 +312,18 @@ func (a *DefaultAPIService) ApiV1DriversPost(ctx context.Context) ApiApiV1Driver
 }
 
 // Execute executes the request
-func (a *DefaultAPIService) ApiV1DriversPostExecute(r ApiApiV1DriversPostRequest) (*http.Response, error) {
+//  @return ApiV1DriversPost200Response
+func (a *DefaultAPIService) ApiV1DriversPostExecute(r ApiApiV1DriversPostRequest) (*ApiV1DriversPost200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
+		localVarReturnValue  *ApiV1DriversPost200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DefaultAPIService.ApiV1DriversPost")
 	if err != nil {
-		return nil, &GenericOpenAPIError{error: err.Error()}
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/api/v1/drivers"
@@ -215,7 +332,7 @@ func (a *DefaultAPIService) ApiV1DriversPostExecute(r ApiApiV1DriversPostRequest
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 	if r.recommendRequestV1 == nil {
-		return nil, reportError("recommendRequestV1 is required and must be specified")
+		return localVarReturnValue, nil, reportError("recommendRequestV1 is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -239,19 +356,19 @@ func (a *DefaultAPIService) ApiV1DriversPostExecute(r ApiApiV1DriversPostRequest
 	localVarPostBody = r.recommendRequestV1
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
-		return nil, err
+		return localVarReturnValue, nil, err
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(req)
 	if err != nil || localVarHTTPResponse == nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
 	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
-		return localVarHTTPResponse, err
+		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
 	if localVarHTTPResponse.StatusCode >= 300 {
@@ -264,16 +381,35 @@ func (a *DefaultAPIService) ApiV1DriversPostExecute(r ApiApiV1DriversPostRequest
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
-				return localVarHTTPResponse, newErr
+				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
-			return localVarHTTPResponse, newErr
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
-		return localVarHTTPResponse, newErr
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ErrorMessage
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
-	return localVarHTTPResponse, nil
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
 type ApiApiV1ForecastsIdArtifactsNameGetRequest struct {
@@ -288,11 +424,26 @@ func (r ApiApiV1ForecastsIdArtifactsNameGetRequest) Execute() (*os.File, *http.R
 }
 
 /*
-ApiV1ForecastsIdArtifactsNameGet Stream a single output file (proxied from internal artifact store; no gs:// URLs)
+ApiV1ForecastsIdArtifactsNameGet Download a forecast output file
+
+Streams a single output file for a completed forecast job.
+
+Available artifacts:
+- `forecast.json` — point forecast values for each horizon month
+- `backtest_metrics.json` — accuracy metrics from the backtest evaluation (only when `backtest: true`)
+- `backtest_trajectories.json` — full trajectory samples from the backtest (only when `backtest: true`)
+- `external_signals.json` — external driver signals used by the model
+- `input.json` — the processed input timeseries as seen by the pipeline
+
+The response body is the raw file bytes; the `Content-Type` header matches the
+artifact's `content_type` field from `GET /api/v1/forecasts/{id}`.
+Supports HTTP `Range` requests for partial downloads.
+Jobs tombstoned by the retention policy return 404.
+
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id
- @param name
+ @param id Forecast job id.
+ @param name Artifact filename (e.g. `forecast.json`).
  @return ApiApiV1ForecastsIdArtifactsNameGetRequest
 */
 func (a *DefaultAPIService) ApiV1ForecastsIdArtifactsNameGet(ctx context.Context, id string, name string) ApiApiV1ForecastsIdArtifactsNameGetRequest {
@@ -392,10 +543,17 @@ func (r ApiApiV1ForecastsIdGetRequest) Execute() (*ApiV1ForecastsIdGet200Respons
 }
 
 /*
-ApiV1ForecastsIdGet Poll forecast job status and artifact metadata (downloads via artifacts sub-path)
+ApiV1ForecastsIdGet Poll forecast job status and artifact list
+
+Returns the current status and artifact metadata for a forecast job you own.
+Poll this endpoint until `status` is `completed` or `failed`. Once completed,
+download output files via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+
+Jobs tombstoned by the retention policy return 404.
+
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param id
+ @param id Forecast job id returned by `POST /api/v1/forecasts`.
  @return ApiApiV1ForecastsIdGetRequest
 */
 func (a *DefaultAPIService) ApiV1ForecastsIdGet(ctx context.Context, id string) ApiApiV1ForecastsIdGetRequest {
@@ -498,12 +656,15 @@ func (r ApiApiV1ForecastsPostRequest) Execute() (*ApiV1ForecastsPost202Response,
 }
 
 /*
-ApiV1ForecastsPost Start async forecast job
+ApiV1ForecastsPost Submit an async forecast job
 
-Request body is `ForecastRequestV1`. Optional top-level `filters`, when present,
-may include `categories` and `regions` arrays: **each integer must be between 1 and 9999**
-(inclusive). The API does not verify ids against a catalog. Optional `limit` is
-an integer from **0** to **10000**. See schema `Filters` for the full shape.
+Submits a monthly forecast job. The job runs asynchronously — poll
+`GET /api/v1/forecasts/{id}` until `status` is `completed` or `failed`.
+Output files are then available via `GET /api/v1/forecasts/{id}/artifacts/{name}`.
+
+The timeseries must contain at least 60 monthly observations (5 years) aligned
+to the first of each month. At least one of `soft_horizon` or `hard_horizon`
+must be specified.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -592,6 +753,16 @@ func (a *DefaultAPIService) ApiV1ForecastsPostExecute(r ApiApiV1ForecastsPostReq
 					newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		if localVarHTTPResponse.StatusCode == 503 {
+			var v ErrorMessage
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -618,6 +789,7 @@ type ApiApiV1JobsGetRequest struct {
 	pipelineType *string
 }
 
+// 1-indexed page number.
 func (r ApiApiV1JobsGetRequest) Page(page int32) ApiApiV1JobsGetRequest {
 	r.page = &page
 	return r
@@ -629,23 +801,25 @@ func (r ApiApiV1JobsGetRequest) Limit(limit int32) ApiApiV1JobsGetRequest {
 	return r
 }
 
+// Column to sort by.
 func (r ApiApiV1JobsGetRequest) Sort(sort string) ApiApiV1JobsGetRequest {
 	r.sort = &sort
 	return r
 }
 
+// Sort direction.
 func (r ApiApiV1JobsGetRequest) Order(order string) ApiApiV1JobsGetRequest {
 	r.order = &order
 	return r
 }
 
-// Optional status filter.
+// Filter to jobs in this status.
 func (r ApiApiV1JobsGetRequest) Status(status string) ApiApiV1JobsGetRequest {
 	r.status = &status
 	return r
 }
 
-// Optional pipeline type filter (today only \&quot;forecast\&quot; is emitted).
+// Filter to jobs of this pipeline type (currently only &#x60;forecast&#x60; is emitted).
 func (r ApiApiV1JobsGetRequest) PipelineType(pipelineType string) ApiApiV1JobsGetRequest {
 	r.pipelineType = &pipelineType
 	return r
@@ -656,16 +830,14 @@ func (r ApiApiV1JobsGetRequest) Execute() (*ApiV1JobsGet200Response, *http.Respo
 }
 
 /*
-ApiV1JobsGet Paginated list of the caller's async jobs
+ApiV1JobsGet List your async jobs
 
-Returns the authenticated user's `async_jobs` as a paginated list. Heavy fields
-(`payload`, `artifact_manifest`) are intentionally omitted; fetch full per-job
-state via `GET /api/v1/forecasts/{id}` (only forecast jobs are supported today).
+Returns async jobs as a paginated list, sorted and filtered by the query
+parameters. Heavy fields (payload, artifact manifest) are omitted — fetch
+full per-job state via `GET /api/v1/forecasts/{id}`.
 
-Only rows that have not been tombstoned by the retention job are returned.
-A tombstoned job (`deleted_at IS NOT NULL`) is excluded here and returns 404
-on the detail endpoint — run `cmd/retention` (see `FORECAST_RETENTION_MAX_AGE`) to
-lifecycle-manage settled jobs.
+Jobs tombstoned by the retention policy are excluded here and return 404
+on the detail endpoint.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -793,7 +965,12 @@ func (r ApiApiV1MeGetRequest) Execute() (*MeResponse, *http.Response, error) {
 }
 
 /*
-ApiV1MeGet Current user, balances, and usage tier
+ApiV1MeGet Account snapshot — balance, tier, and credit tranches
+
+Returns the account snapshot for the current user: credit balance, active
+credit tranches, auto-recharge settings, and current pricing tier. All
+monetary fields are integer EUR cents (1 EUR = 100 cents).
+
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiApiV1MeGetRequest
@@ -971,17 +1148,6 @@ func (a *DefaultAPIService) ApiV1RegionsGetExecute(r ApiApiV1RegionsGetRequest) 
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-		if localVarHTTPResponse.StatusCode == 502 {
-			var v ErrorMessage
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
 		if localVarHTTPResponse.StatusCode == 503 {
 			var v ErrorMessage
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -1045,14 +1211,11 @@ func (r ApiApiV1UsageGetRequest) Execute() (*ApiV1UsageGet200Response, *http.Res
 }
 
 /*
-ApiV1UsageGet Paginated usage (charged tasks)
+ApiV1UsageGet Billing history (paginated usage events)
 
-Paginated `usage_events` for the authenticated user. Each row is one billing
-charge (async job completion or a synchronous billed call). When present,
-`endpoint` records the API endpoint that produced the charge.
-
-Pagination is page-based; callers control the sort column and direction via the
-`sort` and `order` query parameters.
+Returns billing history as a paginated list of usage events. Each event
+represents one charge — either a completed async job or a synchronous billed
+API call. Use `sort` and `order` to control the result order.
 
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -1169,12 +1332,18 @@ type ApiHealthGetRequest struct {
 	ApiService *DefaultAPIService
 }
 
-func (r ApiHealthGetRequest) Execute() (*HealthResponse, *http.Response, error) {
+func (r ApiHealthGetRequest) Execute() (*HealthGet200Response, *http.Response, error) {
 	return r.ApiService.HealthGetExecute(r)
 }
 
 /*
-HealthGet Health check
+HealthGet Service health check
+
+Liveness check. Returns `status` ("ok" or "degraded") and a `components` map
+where each key is a functional component name and each value reports its current
+state. A 200 means all components are healthy; 503 means at least one is in an
+error state.
+
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiHealthGetRequest
@@ -1187,13 +1356,13 @@ func (a *DefaultAPIService) HealthGet(ctx context.Context) ApiHealthGetRequest {
 }
 
 // Execute executes the request
-//  @return HealthResponse
-func (a *DefaultAPIService) HealthGetExecute(r ApiHealthGetRequest) (*HealthResponse, *http.Response, error) {
+//  @return HealthGet200Response
+func (a *DefaultAPIService) HealthGetExecute(r ApiHealthGetRequest) (*HealthGet200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *HealthResponse
+		localVarReturnValue  *HealthGet200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DefaultAPIService.HealthGet")
@@ -1247,7 +1416,7 @@ func (a *DefaultAPIService) HealthGetExecute(r ApiHealthGetRequest) (*HealthResp
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 503 {
-			var v HealthResponse
+			var v HealthGet503Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

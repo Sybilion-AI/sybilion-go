@@ -58,7 +58,7 @@ Resolution order:
 - `c.ListCategories(ctx)` / `c.ListRegions(ctx)` — available thematic categories and geographic regions.
 
 **Forecasts**
-- `c.SubmitForecast(ctx, req)` — submit an async forecast job.
+- `c.SubmitForecast(ctx, req)` — submit an async forecast job. Set `req.AuxTimeseries` (1–10 series, each keyed on the same dates as `Timeseries`) to supply your own forecast drivers.
 - `c.GetForecast(ctx, id)` — poll status of a forecast job.
 - `c.GetForecastArtifact(ctx, id, name)` — download a forecast artifact by name.
 - `c.Forecasts().Wait(ctx, jobID, poll)` — polls until the job is settled or context is done.

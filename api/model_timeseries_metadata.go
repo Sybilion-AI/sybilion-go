@@ -19,10 +19,13 @@ import (
 // checks if the TimeseriesMetadata type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &TimeseriesMetadata{}
 
-// TimeseriesMetadata struct for TimeseriesMetadata
+// TimeseriesMetadata Descriptive metadata the ranking model uses to interpret and contextualize the timeseries.
 type TimeseriesMetadata struct {
+	// Extended context for the model, up to 2048 characters. More detail improves driver relevance.
 	Description *string `json:"description,omitempty"`
+	// Up to 20 semantic tags that help anchor the search to relevant datasets.
 	Keywords []string `json:"keywords,omitempty"`
+	// Short identifier for the series, 20–511 characters.
 	Title string `json:"title"`
 }
 

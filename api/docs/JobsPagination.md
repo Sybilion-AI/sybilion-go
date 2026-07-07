@@ -4,12 +4,12 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Limit** | **int32** |  | 
-**Order** | **string** |  | 
-**Page** | **int32** |  | 
-**Sort** | **string** |  | 
-**Total** | **int64** |  | 
-**TotalPages** | **int64** |  | 
+**Limit** | **int32** | Page size echoed back from the request. | 
+**Order** | **string** | Sort direction echoed back from the request. | 
+**Page** | **int32** | 1-indexed current page number echoed back from the request. | 
+**Sort** | **string** | Column the rows are sorted by, echoed back from the request. | 
+**Total** | **int64** | Total matching rows for the authenticated user (full set, not just this page). | 
+**TotalPages** | **int64** | ceil(total / limit). Zero when total is zero. | 
 
 ## Methods
 

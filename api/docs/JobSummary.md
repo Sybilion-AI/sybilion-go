@@ -5,15 +5,15 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **CreatedAt** | **time.Time** |  | 
-**EurCentsFinal** | Pointer to **NullableInt64** | Final settled charge for the job, in EUR cents. Null until settled. | [optional] 
+**EurCentsFinal** | Pointer to **NullableInt64** | Final settled charge for the job in EUR cents. Null until the job reaches a terminal state. | [optional] 
 **JobId** | **string** |  | 
-**PipelineType** | **string** | Today only \&quot;forecast\&quot;; future pipeline types will appear here. | 
-**RunId** | Pointer to **string** | Internal run id (omitted for jobs that haven&#39;t started yet). | [optional] 
-**Settled** | **bool** | True iff the job has reached a terminal state and been billed. | 
+**PipelineType** | **string** | Pipeline that produced this job — currently always &#x60;forecast&#x60;. | 
+**RunId** | Pointer to **string** | Opaque internal run identifier. Omitted for jobs that have not started yet; include in support requests. | [optional] 
+**Settled** | **bool** | True once the job has reached a terminal state and the charge has been posted. | 
 **SettledAt** | Pointer to **NullableTime** |  | [optional] 
 **Status** | **string** |  | 
-**TerminalReason** | Pointer to **NullableString** |  | [optional] 
-**WorkflowId** | Pointer to **string** | Internal workflow id (omitted for jobs that haven&#39;t started yet). | [optional] 
+**TerminalReason** | Pointer to **NullableString** | Human-readable failure message for &#x60;failed&#x60; or &#x60;canceled&#x60; jobs; null for non-terminal statuses or cleanly-canceled jobs. | [optional] 
+**WorkflowId** | Pointer to **string** | Opaque internal workflow identifier. Omitted for jobs that have not started yet; include in support requests. | [optional] 
 
 ## Methods
 

@@ -19,20 +19,21 @@ import (
 // checks if the UsageEvent type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UsageEvent{}
 
-// UsageEvent struct for UsageEvent
+// UsageEvent A single billing charge, corresponding to one API call or one completed async job.
 type UsageEvent struct {
-	// async_jobs.id (UUID) for async pipeline charges; null for sync endpoint charges
+	// The `async_jobs.id` (UUID) for async pipeline charges; null for synchronous endpoint charges.
 	AsyncJobId NullableString `json:"async_job_id,omitempty"`
-	// Timestamp (ISO-8601 text from the database)
+	// Timestamp of the charge (ISO 8601).
 	CreatedAt string `json:"created_at"`
-	// Whole credits debited for this usage row before EUR conversion (`eur_cents_charged`).
+	// Whole credits debited for this row before EUR conversion.
 	CreditsCharged int64 `json:"credits_charged"`
-	// Billing endpoint key (e.g. forecast pipeline type or sync route key)
+	// Billing route key (e.g. `drivers`, `alerts`, or a forecast pipeline type).
 	Endpoint *string `json:"endpoint,omitempty"`
-	// EUR cents debited for this usage row (1 EUR = 100 cents).
+	// EUR cents debited for this row (1 EUR = 100 cents).
 	EurCentsCharged int64 `json:"eur_cents_charged"`
+	// Auto-increment row identifier.
 	Id int64 `json:"id"`
-	// Strategy-defined metering quantity (e.g. tokens, seconds); not necessarily equal to credits.
+	// Metered quantity — item count for per-unit pricing, 1 for flat-fee strategies.
 	Units int64 `json:"units"`
 }
 

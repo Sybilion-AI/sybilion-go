@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**AsyncJobId** | Pointer to **NullableString** | async_jobs.id (UUID) for async pipeline charges; null for sync endpoint charges | [optional] 
-**CreatedAt** | **string** | Timestamp (ISO-8601 text from the database) | 
-**CreditsCharged** | **int64** | Whole credits debited for this usage row before EUR conversion (&#x60;eur_cents_charged&#x60;). | 
-**Endpoint** | Pointer to **string** | Billing endpoint key (e.g. forecast pipeline type or sync route key) | [optional] 
-**EurCentsCharged** | **int64** | EUR cents debited for this usage row (1 EUR &#x3D; 100 cents). | 
-**Id** | **int64** |  | 
-**Units** | **int64** | Strategy-defined metering quantity (e.g. tokens, seconds); not necessarily equal to credits. | 
+**AsyncJobId** | Pointer to **NullableString** | The &#x60;async_jobs.id&#x60; (UUID) for async pipeline charges; null for synchronous endpoint charges. | [optional] 
+**CreatedAt** | **string** | Timestamp of the charge (ISO 8601). | 
+**CreditsCharged** | **int64** | Whole credits debited for this row before EUR conversion. | 
+**Endpoint** | Pointer to **string** | Billing route key (e.g. &#x60;drivers&#x60;, &#x60;alerts&#x60;, or a forecast pipeline type). | [optional] 
+**EurCentsCharged** | **int64** | EUR cents debited for this row (1 EUR &#x3D; 100 cents). | 
+**Id** | **int64** | Auto-increment row identifier. | 
+**Units** | **int64** | Metered quantity — item count for per-unit pricing, 1 for flat-fee strategies. | 
 
 ## Methods
 

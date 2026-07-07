@@ -21,8 +21,10 @@ var _ MappedNullable = &ErrorMessage{}
 
 // ErrorMessage struct for ErrorMessage
 type ErrorMessage struct {
-	// Human-readable message (e.g. `angler catalog not configured`).
+	// Human-readable error message.
 	Error string `json:"error"`
+	// Correlation id for this request, also returned in the X-Trace-Id response header. Quote it when contacting support so the request can be traced.
+	TraceId *string `json:"trace_id,omitempty"`
 }
 
 type _ErrorMessage ErrorMessage
@@ -69,6 +71,38 @@ func (o *ErrorMessage) SetError(v string) {
 	o.Error = v
 }
 
+// GetTraceId returns the TraceId field value if set, zero value otherwise.
+func (o *ErrorMessage) GetTraceId() string {
+	if o == nil || IsNil(o.TraceId) {
+		var ret string
+		return ret
+	}
+	return *o.TraceId
+}
+
+// GetTraceIdOk returns a tuple with the TraceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ErrorMessage) GetTraceIdOk() (*string, bool) {
+	if o == nil || IsNil(o.TraceId) {
+		return nil, false
+	}
+	return o.TraceId, true
+}
+
+// HasTraceId returns a boolean if a field has been set.
+func (o *ErrorMessage) HasTraceId() bool {
+	if o != nil && !IsNil(o.TraceId) {
+		return true
+	}
+
+	return false
+}
+
+// SetTraceId gets a reference to the given string and assigns it to the TraceId field.
+func (o *ErrorMessage) SetTraceId(v string) {
+	o.TraceId = &v
+}
+
 func (o ErrorMessage) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -80,6 +114,9 @@ func (o ErrorMessage) MarshalJSON() ([]byte, error) {
 func (o ErrorMessage) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["error"] = o.Error
+	if !IsNil(o.TraceId) {
+		toSerialize["trace_id"] = o.TraceId
+	}
 	return toSerialize, nil
 }
 

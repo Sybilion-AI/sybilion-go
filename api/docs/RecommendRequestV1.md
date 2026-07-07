@@ -4,11 +4,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Filters** | Pointer to [**Filters**](Filters.md) | Optional. Same validation as **&#x60;POST /api/v1/forecasts&#x60;**: each **&#x60;categories[]&#x60;** and **&#x60;regions[]&#x60;** entry is an integer **1–9999** (inclusive); optional **&#x60;limit&#x60;** is **0–10000**. Values are not verified against catalog APIs.  | [optional] 
-**RecencyFactor** | **float64** |  | 
-**Timeseries** | Pointer to **map[string]float32** | Optional. Map of YYYY-MM-DD date keys to numeric observation values. When supplied, all keys must parse as YYYY-MM-DD and all values must be finite. Unlike &#x60;/forecasts&#x60;, this endpoint is frequency-agnostic — there is no monthly alignment, gap detection, or 60-point minimum. When omitted, the handler does not forward the field to the upstream Recommend service at all.  | [optional] 
-**TimeseriesMetadata** | [**TimeseriesMetadata**](TimeseriesMetadata.md) |  | 
-**Version** | **string** | Recommend pipeline version. Closed set; only v1 is supported today. Used **locally** to select the per-version validator and is **not forwarded** to the upstream Recommend service.  | 
+**Filters** | Pointer to [**Filters**](Filters.md) | Optional. Each **&#x60;categories[]&#x60;** and **&#x60;regions[]&#x60;** entry must be an integer **1–9999** (inclusive). Optional **&#x60;limit&#x60;** is **0–1000** (default **100** when omitted). Values are not verified against catalog APIs.  | [optional] 
+**RecencyFactor** | **float64** | Weight given to more recent observations when ranking drivers. 0.0 &#x3D; equal weight; 1.0 &#x3D; strongest recency bias. | 
+**Timeseries** | Pointer to **map[string]float32** | Optional. Map of YYYY-MM-DD date keys to numeric observation values. When supplied, all keys must parse as YYYY-MM-DD and all values must be finite. Unlike &#x60;/forecasts&#x60;, this endpoint is frequency-agnostic — no monthly alignment, gap detection, or minimum length is enforced. When omitted, the handler does not forward the field upstream.  | [optional] 
+**TimeseriesMetadata** | [**TimeseriesMetadata**](TimeseriesMetadata.md) | Describes the series so the ranking model can identify relevant drivers. | 
+**Version** | **string** | Recommend pipeline version. Closed set; only &#x60;v1&#x60; is supported today. Used locally to select the per-version validator and is **not forwarded** to the upstream Recommend service.  | 
 
 ## Methods
 

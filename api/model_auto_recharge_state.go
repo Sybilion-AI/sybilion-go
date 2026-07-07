@@ -21,17 +21,19 @@ var _ MappedNullable = &AutoRechargeState{}
 
 // AutoRechargeState struct for AutoRechargeState
 type AutoRechargeState struct {
-	// When the available balance drops below this many EUR cents, recharge fires.
+	// When the available balance drops below this many EUR cents, a recharge is triggered.
 	BelowEurCents int64 `json:"below_eur_cents"`
+	// Whether auto-recharge is active for this account.
 	Enabled bool `json:"enabled"`
-	// Whether a Stripe customer id is stored (required for auto-recharge to run)
+	// Whether a Stripe customer record exists (required for auto-recharge to run).
 	HasStripeCustomer bool `json:"has_stripe_customer"`
+	// EUR cents charged via auto-recharge in the current UTC calendar month.
 	MeterCents int64 `json:"meter_cents"`
-	// UTC month start for meter_cents, if any charges recorded this month
+	// UTC month start for `meter_cents`; null if no auto-recharge has run this month.
 	MeterMonth NullableString `json:"meter_month,omitempty"`
-	// EUR cents charged via auto-recharge per UTC calendar month; 0 = no cap
+	// Maximum EUR cents that may be charged via auto-recharge per UTC calendar month. 0 = no cap.
 	MonthlyCapCents int64 `json:"monthly_cap_cents"`
-	// Target balance to reach after a recharge, in EUR cents.
+	// Balance target after a successful recharge, in EUR cents.
 	TargetEurCents int64 `json:"target_eur_cents"`
 }
 

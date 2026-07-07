@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Categories** | Pointer to **[]int32** | Dimension ids; each item must be an integer from **1** through **9999** inclusive. | [optional] 
-**Limit** | Pointer to **int32** |  | [optional] 
-**Regions** | Pointer to **[]int32** | Dimension ids; each item must be an integer from **1** through **9999** inclusive. | [optional] 
+**Categories** | Pointer to **[]int32** | Thematic category ids to filter by; each must be an integer **1–9999** inclusive. | [optional] 
+**Limit** | Pointer to **int32** | Maximum number of items to return. When omitted, a per-environment default is applied (100 by default). The maximum accepted value is operator-configurable (default 1000). | [optional] 
+**Regions** | Pointer to **[]int32** | Geographic region ids to filter by; each must be an integer **1–9999** inclusive. | [optional] 
 
 ## Methods
 

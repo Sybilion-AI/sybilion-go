@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ContentType** | Pointer to **string** |  | [optional] 
-**Href** | Pointer to **string** |  | [optional] 
-**Name** | Pointer to **string** |  | [optional] 
-**Size** | Pointer to **int64** |  | [optional] 
+**ContentType** | Pointer to **string** | MIME type of the artifact (e.g. &#x60;application/json&#x60;). | [optional] 
+**Href** | Pointer to **string** | Relative URL to stream via &#x60;GET /api/v1/forecasts/{id}/artifacts/{name}&#x60;. | [optional] 
+**Name** | Pointer to **string** | Artifact filename (e.g. &#x60;forecast.json&#x60;, &#x60;backtest_metrics.json&#x60;). | [optional] 
+**Size** | Pointer to **int64** | File size in bytes. | [optional] 
 
 ## Methods
 
