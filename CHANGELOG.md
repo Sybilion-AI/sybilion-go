@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`ForecastRequestV1.RunBaseline`**: optional `bool` (default `false`). When true, re-runs the primary model with its drivers stripped and emits the `sybilion_driverless` self-comparison alongside the reference baselines. Off by default because it roughly doubles pipeline work.
+- **`ForecastRequestV1.OptimizationBudget`**: optional HPO trial budget (`none`/`low`/`mid`/`high`, default `none`). `low` runs 10 trials, `high` runs 200, and `none`/`mid` fall back to the pipeline default.
+- **`ForecastRequestV1.MaxNumFeatures`**: optional nullable top-k feature cap for the final feature-selection step. When unset, the pipeline falls back to the regime default; bounded above by the regime ceiling.
+
 ## [0.2.0] - 2026-06-22
 
 ### Added
