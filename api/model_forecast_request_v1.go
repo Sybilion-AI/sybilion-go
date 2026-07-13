@@ -31,10 +31,16 @@ type ForecastRequestV1 struct {
 	Frequency string `json:"frequency"`
 	// Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the pipeline falls back to a driverless forecast at `soft_horizon` if no quality run succeeds. When still failing at `hard_horizon`, the pipeline emits a driverless forecast at that horizon. At least one of `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be strictly less than `soft_horizon`. Maximum 12. 
 	HardHorizon *int32 `json:"hard_horizon,omitempty"`
+	// Optional. Top-k feature cap kept in the final feature-selection step. When omitted (or null), no user limit is applied and the pipeline falls back to the regime default. Bounded above by the regime ceiling, so a value larger than that cap is a no-op. 
+	MaxNumFeatures NullableInt32 `json:"max_num_features,omitempty"`
+	// Optional. HPO trial budget for the driver-selection/model step. `low` runs 10 trials, `high` runs 200, and `none`/`mid` fall back to the pipeline default. Case-insensitive; `null` maps to `none`. 
+	OptimizationBudget *string `json:"optimization_budget,omitempty"`
 	// Pipeline version. Closed set — only `v1` is supported today.
 	PipelineVersion string `json:"pipeline_version"`
 	// Weight given to more recent observations when selecting drivers. 0.0 = equal weight across the full history; 1.0 = strongest recency bias.
 	RecencyFactor float64 `json:"recency_factor"`
+	// When true, re-run the primary model with its drivers stripped and emit the `sybilion_driverless` self-comparison alongside the reference baselines. Off by default because it roughly doubles pipeline work. 
+	RunBaseline *bool `json:"run_baseline,omitempty"`
 	// Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month until it reaches `hard_horizon` (when set) while seeking a quality forecast. At least one of `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be strictly less than `soft_horizon`. Maximum 12. 
 	SoftHorizon *int32 `json:"soft_horizon,omitempty"`
 	// When true, every value in `timeseries` must be `>= 0`; a single negative observation rejects the request with 422. The pipeline also clamps output values at zero. Defaults to false. 
@@ -54,8 +60,12 @@ type _ForecastRequestV1 ForecastRequestV1
 func NewForecastRequestV1(frequency string, pipelineVersion string, recencyFactor float64, timeseries map[string]float32, timeseriesMetadata TimeseriesMetadata) *ForecastRequestV1 {
 	this := ForecastRequestV1{}
 	this.Frequency = frequency
+	var optimizationBudget string = "none"
+	this.OptimizationBudget = &optimizationBudget
 	this.PipelineVersion = pipelineVersion
 	this.RecencyFactor = recencyFactor
+	var runBaseline bool = false
+	this.RunBaseline = &runBaseline
 	var strictlyPositive bool = false
 	this.StrictlyPositive = &strictlyPositive
 	this.Timeseries = timeseries
@@ -68,6 +78,10 @@ func NewForecastRequestV1(frequency string, pipelineVersion string, recencyFacto
 // but it doesn't guarantee that properties required by API are set
 func NewForecastRequestV1WithDefaults() *ForecastRequestV1 {
 	this := ForecastRequestV1{}
+	var optimizationBudget string = "none"
+	this.OptimizationBudget = &optimizationBudget
+	var runBaseline bool = false
+	this.RunBaseline = &runBaseline
 	var strictlyPositive bool = false
 	this.StrictlyPositive = &strictlyPositive
 	return &this
@@ -225,6 +239,80 @@ func (o *ForecastRequestV1) SetHardHorizon(v int32) {
 	o.HardHorizon = &v
 }
 
+// GetMaxNumFeatures returns the MaxNumFeatures field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ForecastRequestV1) GetMaxNumFeatures() int32 {
+	if o == nil || IsNil(o.MaxNumFeatures.Get()) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxNumFeatures.Get()
+}
+
+// GetMaxNumFeaturesOk returns a tuple with the MaxNumFeatures field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ForecastRequestV1) GetMaxNumFeaturesOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.MaxNumFeatures.Get(), o.MaxNumFeatures.IsSet()
+}
+
+// HasMaxNumFeatures returns a boolean if a field has been set.
+func (o *ForecastRequestV1) HasMaxNumFeatures() bool {
+	if o != nil && o.MaxNumFeatures.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetMaxNumFeatures gets a reference to the given NullableInt32 and assigns it to the MaxNumFeatures field.
+func (o *ForecastRequestV1) SetMaxNumFeatures(v int32) {
+	o.MaxNumFeatures.Set(&v)
+}
+// SetMaxNumFeaturesNil sets the value for MaxNumFeatures to be an explicit nil
+func (o *ForecastRequestV1) SetMaxNumFeaturesNil() {
+	o.MaxNumFeatures.Set(nil)
+}
+
+// UnsetMaxNumFeatures ensures that no value is present for MaxNumFeatures, not even an explicit nil
+func (o *ForecastRequestV1) UnsetMaxNumFeatures() {
+	o.MaxNumFeatures.Unset()
+}
+
+// GetOptimizationBudget returns the OptimizationBudget field value if set, zero value otherwise.
+func (o *ForecastRequestV1) GetOptimizationBudget() string {
+	if o == nil || IsNil(o.OptimizationBudget) {
+		var ret string
+		return ret
+	}
+	return *o.OptimizationBudget
+}
+
+// GetOptimizationBudgetOk returns a tuple with the OptimizationBudget field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ForecastRequestV1) GetOptimizationBudgetOk() (*string, bool) {
+	if o == nil || IsNil(o.OptimizationBudget) {
+		return nil, false
+	}
+	return o.OptimizationBudget, true
+}
+
+// HasOptimizationBudget returns a boolean if a field has been set.
+func (o *ForecastRequestV1) HasOptimizationBudget() bool {
+	if o != nil && !IsNil(o.OptimizationBudget) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimizationBudget gets a reference to the given string and assigns it to the OptimizationBudget field.
+func (o *ForecastRequestV1) SetOptimizationBudget(v string) {
+	o.OptimizationBudget = &v
+}
+
 // GetPipelineVersion returns the PipelineVersion field value
 func (o *ForecastRequestV1) GetPipelineVersion() string {
 	if o == nil {
@@ -271,6 +359,38 @@ func (o *ForecastRequestV1) GetRecencyFactorOk() (*float64, bool) {
 // SetRecencyFactor sets field value
 func (o *ForecastRequestV1) SetRecencyFactor(v float64) {
 	o.RecencyFactor = v
+}
+
+// GetRunBaseline returns the RunBaseline field value if set, zero value otherwise.
+func (o *ForecastRequestV1) GetRunBaseline() bool {
+	if o == nil || IsNil(o.RunBaseline) {
+		var ret bool
+		return ret
+	}
+	return *o.RunBaseline
+}
+
+// GetRunBaselineOk returns a tuple with the RunBaseline field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ForecastRequestV1) GetRunBaselineOk() (*bool, bool) {
+	if o == nil || IsNil(o.RunBaseline) {
+		return nil, false
+	}
+	return o.RunBaseline, true
+}
+
+// HasRunBaseline returns a boolean if a field has been set.
+func (o *ForecastRequestV1) HasRunBaseline() bool {
+	if o != nil && !IsNil(o.RunBaseline) {
+		return true
+	}
+
+	return false
+}
+
+// SetRunBaseline gets a reference to the given bool and assigns it to the RunBaseline field.
+func (o *ForecastRequestV1) SetRunBaseline(v bool) {
+	o.RunBaseline = &v
 }
 
 // GetSoftHorizon returns the SoftHorizon field value if set, zero value otherwise.
@@ -408,8 +528,17 @@ func (o ForecastRequestV1) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.HardHorizon) {
 		toSerialize["hard_horizon"] = o.HardHorizon
 	}
+	if o.MaxNumFeatures.IsSet() {
+		toSerialize["max_num_features"] = o.MaxNumFeatures.Get()
+	}
+	if !IsNil(o.OptimizationBudget) {
+		toSerialize["optimization_budget"] = o.OptimizationBudget
+	}
 	toSerialize["pipeline_version"] = o.PipelineVersion
 	toSerialize["recency_factor"] = o.RecencyFactor
+	if !IsNil(o.RunBaseline) {
+		toSerialize["run_baseline"] = o.RunBaseline
+	}
 	if !IsNil(o.SoftHorizon) {
 		toSerialize["soft_horizon"] = o.SoftHorizon
 	}
