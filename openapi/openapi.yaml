@@ -508,6 +508,15 @@ components:
           - $ref: '#/components/schemas/TimeseriesMetadata'
           description: Describes the series so the pipeline can identify relevant
             drivers.
+        trend_num_classes:
+          description: 'Optional. Trend-classification label granularity: `2` (binary
+            up/down) or `3` (down/flat/up). Consumed only on the trend analysis path
+            and ignored otherwise.
+
+            '
+          maximum: 3
+          minimum: 2
+          type: integer
       required:
       - pipeline_version
       - frequency

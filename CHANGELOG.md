@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`ForecastRequestV1.TrendNumClasses`** (optional `*int32`, 2 or 3): trend-classification label granularity — 2 (binary up/down) or 3 (down/flat/up). Mirrors the public OPS API contract.
+
+
 ## [0.2.0] - 2026-06-22
 
 ### Added

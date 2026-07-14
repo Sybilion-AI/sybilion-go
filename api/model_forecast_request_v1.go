@@ -1,7 +1,7 @@
 /*
 Sybilion API
 
-The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account and usage. Authenticate every request with `Authorization: Bearer <token>` using either an API key created in the Developers Portal or an Auth0 access token from your dashboard session. 
+The Sybilion API powers the Sybilion Developers Portal: forecasts, drivers, catalog, account and usage. Authenticate every request with `Authorization: Bearer <token>` using either an API key created in the Developers Portal or an Auth0 access token from your dashboard session.
 
 API version: 0.1.0
 */
@@ -11,38 +11,40 @@ API version: 0.1.0
 package sybilionapi
 
 import (
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"fmt"
 )
 
 // checks if the ForecastRequestV1 type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ForecastRequestV1{}
 
-// ForecastRequestV1 Body of `POST /api/v1/forecasts`. Submit a monthly timeseries and the pipeline produces a forward forecast (and optionally a backtest). At least one of `soft_horizon` or `hard_horizon` must be present.  The timeseries must contain at least 60 monthly observations (5 years) aligned to the first of each month (YYYY-MM-01). `recency_factor` controls how strongly the driver-selection step weights recent data. 
+// ForecastRequestV1 Body of `POST /api/v1/forecasts`. Submit a monthly timeseries and the pipeline produces a forward forecast (and optionally a backtest). At least one of `soft_horizon` or `hard_horizon` must be present.  The timeseries must contain at least 60 monthly observations (5 years) aligned to the first of each month (YYYY-MM-01). `recency_factor` controls how strongly the driver-selection step weights recent data.
 type ForecastRequestV1 struct {
-	// Optional. One to ten auxiliary driver series. Each item is a map of the same YYYY-MM-DD date keys as `timeseries` — exactly the same dates, no more and no fewer — to numeric values. Each series becomes a forecast driver that is kept through feature selection, and series are identified by their array position (the first is `aux_0`, the second `aux_1`, and so on). When omitted, the forecast runs without auxiliary drivers. 
+	// Optional. One to ten auxiliary driver series. Each item is a map of the same YYYY-MM-DD date keys as `timeseries` — exactly the same dates, no more and no fewer — to numeric values. Each series becomes a forecast driver that is kept through feature selection, and series are identified by their array position (the first is `aux_0`, the second `aux_1`, and so on). When omitted, the forecast runs without auxiliary drivers.
 	AuxTimeseries []map[string]float32 `json:"aux_timeseries,omitempty"`
 	// When true, run a backtest evaluation alongside the forecast and include `backtest_metrics.json` and `backtest_trajectories.json` in the artifacts.
 	Backtest *bool `json:"backtest,omitempty"`
-	// Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999** (inclusive). Optional **`limit`** is **0–1000** (default **100** when omitted). Values are not verified against catalog APIs. 
+	// Optional. Each **`categories[]`** and **`regions[]`** entry must be an integer **1–9999** (inclusive). Optional **`limit`** is **0–1000** (default **100** when omitted). Values are not verified against catalog APIs.
 	Filters *Filters `json:"filters,omitempty"`
 	// Series cadence. Only `monthly` is currently supported.
 	Frequency string `json:"frequency"`
-	// Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the pipeline falls back to a driverless forecast at `soft_horizon` if no quality run succeeds. When still failing at `hard_horizon`, the pipeline emits a driverless forecast at that horizon. At least one of `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be strictly less than `soft_horizon`. Maximum 12. 
+	// Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the pipeline falls back to a driverless forecast at `soft_horizon` if no quality run succeeds. When still failing at `hard_horizon`, the pipeline emits a driverless forecast at that horizon. At least one of `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be strictly less than `soft_horizon`. Maximum 12.
 	HardHorizon *int32 `json:"hard_horizon,omitempty"`
 	// Pipeline version. Closed set — only `v1` is supported today.
 	PipelineVersion string `json:"pipeline_version"`
 	// Weight given to more recent observations when selecting drivers. 0.0 = equal weight across the full history; 1.0 = strongest recency bias.
 	RecencyFactor float64 `json:"recency_factor"`
-	// Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month until it reaches `hard_horizon` (when set) while seeking a quality forecast. At least one of `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be strictly less than `soft_horizon`. Maximum 12. 
+	// Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month until it reaches `hard_horizon` (when set) while seeking a quality forecast. At least one of `soft_horizon` or `hard_horizon` must be present. When both are set, `hard_horizon` must be strictly less than `soft_horizon`. Maximum 12.
 	SoftHorizon *int32 `json:"soft_horizon,omitempty"`
-	// When true, every value in `timeseries` must be `>= 0`; a single negative observation rejects the request with 422. The pipeline also clamps output values at zero. Defaults to false. 
+	// When true, every value in `timeseries` must be `>= 0`; a single negative observation rejects the request with 422. The pipeline also clamps output values at zero. Defaults to false.
 	StrictlyPositive *bool `json:"strictly_positive,omitempty"`
-	// Map of YYYY-MM-DD date keys to numeric observation values. Must contain at least 60 monthly observations (5 years of history) aligned to the first of each month. 
+	// Map of YYYY-MM-DD date keys to numeric observation values. Must contain at least 60 monthly observations (5 years of history) aligned to the first of each month.
 	Timeseries map[string]float32 `json:"timeseries"`
 	// Describes the series so the pipeline can identify relevant drivers.
 	TimeseriesMetadata TimeseriesMetadata `json:"timeseries_metadata"`
+	// Optional. Trend-classification label granularity: `2` (binary up/down) or `3` (down/flat/up). Consumed only on the trend analysis path and ignored otherwise.
+	TrendNumClasses *int32 `json:"trend_num_classes,omitempty"`
 }
 
 type _ForecastRequestV1 ForecastRequestV1
@@ -225,6 +227,38 @@ func (o *ForecastRequestV1) SetHardHorizon(v int32) {
 	o.HardHorizon = &v
 }
 
+// GetTrendNumClasses returns the TrendNumClasses field value if set, zero value otherwise.
+func (o *ForecastRequestV1) GetTrendNumClasses() int32 {
+	if o == nil || IsNil(o.TrendNumClasses) {
+		var ret int32
+		return ret
+	}
+	return *o.TrendNumClasses
+}
+
+// GetTrendNumClassesOk returns a tuple with the TrendNumClasses field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ForecastRequestV1) GetTrendNumClassesOk() (*int32, bool) {
+	if o == nil || IsNil(o.TrendNumClasses) {
+		return nil, false
+	}
+	return o.TrendNumClasses, true
+}
+
+// HasTrendNumClasses returns a boolean if a field has been set.
+func (o *ForecastRequestV1) HasTrendNumClasses() bool {
+	if o != nil && !IsNil(o.TrendNumClasses) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrendNumClasses gets a reference to the given int32 and assigns it to the TrendNumClasses field.
+func (o *ForecastRequestV1) SetTrendNumClasses(v int32) {
+	o.TrendNumClasses = &v
+}
+
 // GetPipelineVersion returns the PipelineVersion field value
 func (o *ForecastRequestV1) GetPipelineVersion() string {
 	if o == nil {
@@ -386,7 +420,7 @@ func (o *ForecastRequestV1) SetTimeseriesMetadata(v TimeseriesMetadata) {
 }
 
 func (o ForecastRequestV1) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -418,6 +452,9 @@ func (o ForecastRequestV1) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["timeseries"] = o.Timeseries
 	toSerialize["timeseries_metadata"] = o.TimeseriesMetadata
+	if !IsNil(o.TrendNumClasses) {
+		toSerialize["trend_num_classes"] = o.TrendNumClasses
+	}
 	return toSerialize, nil
 }
 
@@ -438,10 +475,10 @@ func (o *ForecastRequestV1) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -497,5 +534,3 @@ func (v *NullableForecastRequestV1) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-
