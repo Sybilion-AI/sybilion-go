@@ -9,8 +9,11 @@ Name | Type | Description | Notes
 **Filters** | Pointer to [**Filters**](Filters.md) | Optional. Each **&#x60;categories[]&#x60;** and **&#x60;regions[]&#x60;** entry must be an integer **1–9999** (inclusive). Optional **&#x60;limit&#x60;** is **0–1000** (default **100** when omitted). Values are not verified against catalog APIs.  | [optional] 
 **Frequency** | **string** | Series cadence. Only &#x60;monthly&#x60; is currently supported. | 
 **HardHorizon** | Pointer to **int32** | Minimum acceptable horizon (months) for the quality step-down ladder. When omitted, the pipeline falls back to a driverless forecast at &#x60;soft_horizon&#x60; if no quality run succeeds. When still failing at &#x60;hard_horizon&#x60;, the pipeline emits a driverless forecast at that horizon. At least one of &#x60;soft_horizon&#x60; or &#x60;hard_horizon&#x60; must be present. When both are set, &#x60;hard_horizon&#x60; must be strictly less than &#x60;soft_horizon&#x60;. Maximum 12.  | [optional] 
+**MaxNumFeatures** | Pointer to **NullableInt32** | Optional. Top-k feature cap kept in the final feature-selection step. When omitted (or null), no user limit is applied and the pipeline falls back to the regime default. Bounded above by the regime ceiling, so a value larger than that cap is a no-op.  | [optional] 
+**OptimizationBudget** | Pointer to **string** | Optional. HPO trial budget for the driver-selection/model step. &#x60;low&#x60; runs 10 trials, &#x60;high&#x60; runs 200, and &#x60;none&#x60;/&#x60;mid&#x60; fall back to the pipeline default. Case-insensitive; &#x60;null&#x60; maps to &#x60;none&#x60;.  | [optional] [default to "none"]
 **PipelineVersion** | **string** | Pipeline version. Closed set — only &#x60;v1&#x60; is supported today. | 
 **RecencyFactor** | **float64** | Weight given to more recent observations when selecting drivers. 0.0 &#x3D; equal weight across the full history; 1.0 &#x3D; strongest recency bias. | 
+**RunBaseline** | Pointer to **bool** | When true, re-run the primary model with its drivers stripped and emit the &#x60;sybilion_driverless&#x60; self-comparison alongside the reference baselines. Off by default because it roughly doubles pipeline work.  | [optional] [default to false]
 **SoftHorizon** | Pointer to **int32** | Ideal forecast horizon (months). The pipeline tries this first, then steps down by one month until it reaches &#x60;hard_horizon&#x60; (when set) while seeking a quality forecast. At least one of &#x60;soft_horizon&#x60; or &#x60;hard_horizon&#x60; must be present. When both are set, &#x60;hard_horizon&#x60; must be strictly less than &#x60;soft_horizon&#x60;. Maximum 12.  | [optional] 
 **StrictlyPositive** | Pointer to **bool** | When true, every value in &#x60;timeseries&#x60; must be &#x60;&gt;&#x3D; 0&#x60;; a single negative observation rejects the request with 422. The pipeline also clamps output values at zero. Defaults to false.  | [optional] [default to false]
 **Timeseries** | **map[string]float32** | Map of YYYY-MM-DD date keys to numeric observation values. Must contain at least 60 monthly observations (5 years of history) aligned to the first of each month.  | 
@@ -155,6 +158,66 @@ SetHardHorizon sets HardHorizon field to given value.
 
 HasHardHorizon returns a boolean if a field has been set.
 
+### GetMaxNumFeatures
+
+`func (o *ForecastRequestV1) GetMaxNumFeatures() int32`
+
+GetMaxNumFeatures returns the MaxNumFeatures field if non-nil, zero value otherwise.
+
+### GetMaxNumFeaturesOk
+
+`func (o *ForecastRequestV1) GetMaxNumFeaturesOk() (*int32, bool)`
+
+GetMaxNumFeaturesOk returns a tuple with the MaxNumFeatures field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMaxNumFeatures
+
+`func (o *ForecastRequestV1) SetMaxNumFeatures(v int32)`
+
+SetMaxNumFeatures sets MaxNumFeatures field to given value.
+
+### HasMaxNumFeatures
+
+`func (o *ForecastRequestV1) HasMaxNumFeatures() bool`
+
+HasMaxNumFeatures returns a boolean if a field has been set.
+
+### SetMaxNumFeaturesNil
+
+`func (o *ForecastRequestV1) SetMaxNumFeaturesNil(b bool)`
+
+ SetMaxNumFeaturesNil sets the value for MaxNumFeatures to be an explicit nil
+
+### UnsetMaxNumFeatures
+`func (o *ForecastRequestV1) UnsetMaxNumFeatures()`
+
+UnsetMaxNumFeatures ensures that no value is present for MaxNumFeatures, not even an explicit nil
+### GetOptimizationBudget
+
+`func (o *ForecastRequestV1) GetOptimizationBudget() string`
+
+GetOptimizationBudget returns the OptimizationBudget field if non-nil, zero value otherwise.
+
+### GetOptimizationBudgetOk
+
+`func (o *ForecastRequestV1) GetOptimizationBudgetOk() (*string, bool)`
+
+GetOptimizationBudgetOk returns a tuple with the OptimizationBudget field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOptimizationBudget
+
+`func (o *ForecastRequestV1) SetOptimizationBudget(v string)`
+
+SetOptimizationBudget sets OptimizationBudget field to given value.
+
+### HasOptimizationBudget
+
+`func (o *ForecastRequestV1) HasOptimizationBudget() bool`
+
+HasOptimizationBudget returns a boolean if a field has been set.
+
 ### GetPipelineVersion
 
 `func (o *ForecastRequestV1) GetPipelineVersion() string`
@@ -194,6 +257,31 @@ and a boolean to check if the value has been set.
 
 SetRecencyFactor sets RecencyFactor field to given value.
 
+
+### GetRunBaseline
+
+`func (o *ForecastRequestV1) GetRunBaseline() bool`
+
+GetRunBaseline returns the RunBaseline field if non-nil, zero value otherwise.
+
+### GetRunBaselineOk
+
+`func (o *ForecastRequestV1) GetRunBaselineOk() (*bool, bool)`
+
+GetRunBaselineOk returns a tuple with the RunBaseline field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRunBaseline
+
+`func (o *ForecastRequestV1) SetRunBaseline(v bool)`
+
+SetRunBaseline sets RunBaseline field to given value.
+
+### HasRunBaseline
+
+`func (o *ForecastRequestV1) HasRunBaseline() bool`
+
+HasRunBaseline returns a boolean if a field has been set.
 
 ### GetSoftHorizon
 
