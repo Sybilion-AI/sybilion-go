@@ -452,6 +452,34 @@ components:
           maximum: 12
           minimum: 1
           type: integer
+        max_num_features:
+          description: 'Optional. Top-k feature cap kept in the final feature-selection
+            step. When omitted (or null),
+
+            no user limit is applied and the pipeline falls back to the regime default.
+            Bounded above by the
+
+            regime ceiling, so a value larger than that cap is a no-op.
+
+            '
+          minimum: 1
+          nullable: true
+          type: integer
+        optimization_budget:
+          default: none
+          description: 'Optional. HPO trial budget for the driver-selection/model
+            step. `low` runs 10 trials, `high`
+
+            runs 200, and `none`/`mid` fall back to the pipeline default. Case-insensitive;
+            `null` maps to `none`.
+
+            '
+          enum:
+          - none
+          - low
+          - mid
+          - high
+          type: string
         pipeline_version:
           description: Pipeline version. Closed set — only `v1` is supported today.
           enum:
@@ -464,6 +492,18 @@ components:
           maximum: 1
           minimum: 0
           type: number
+        run_baseline:
+          default: false
+          description: 'When true, re-run the primary model with its drivers stripped
+            and emit the
+
+            `sybilion_driverless` self-comparison alongside the reference baselines.
+            Off by default
+
+            because it roughly doubles pipeline work.
+
+            '
+          type: boolean
         soft_horizon:
           description: 'Ideal forecast horizon (months). The pipeline tries this first,
             then steps down by one month
