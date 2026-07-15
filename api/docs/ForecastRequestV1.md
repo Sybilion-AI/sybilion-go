@@ -18,6 +18,7 @@ Name | Type | Description | Notes
 **StrictlyPositive** | Pointer to **bool** | When true, every value in &#x60;timeseries&#x60; must be &#x60;&gt;&#x3D; 0&#x60;; a single negative observation rejects the request with 422. The pipeline also clamps output values at zero. Defaults to false.  | [optional] [default to false]
 **Timeseries** | **map[string]float32** | Map of YYYY-MM-DD date keys to numeric observation values. Must contain at least 60 monthly observations (5 years of history) aligned to the first of each month.  | 
 **TimeseriesMetadata** | [**TimeseriesMetadata**](TimeseriesMetadata.md) | Describes the series so the pipeline can identify relevant drivers. | 
+**TrendNumClasses** | Pointer to **int32** | Optional. Trend-classification label granularity: &#x60;2&#x60; (binary up/down) or &#x60;3&#x60; (down/flat/up). Consumed only on the trend analysis path and ignored otherwise.  | [optional] 
 
 ## Methods
 
@@ -372,6 +373,31 @@ and a boolean to check if the value has been set.
 
 SetTimeseriesMetadata sets TimeseriesMetadata field to given value.
 
+
+### GetTrendNumClasses
+
+`func (o *ForecastRequestV1) GetTrendNumClasses() int32`
+
+GetTrendNumClasses returns the TrendNumClasses field if non-nil, zero value otherwise.
+
+### GetTrendNumClassesOk
+
+`func (o *ForecastRequestV1) GetTrendNumClassesOk() (*int32, bool)`
+
+GetTrendNumClassesOk returns a tuple with the TrendNumClasses field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTrendNumClasses
+
+`func (o *ForecastRequestV1) SetTrendNumClasses(v int32)`
+
+SetTrendNumClasses sets TrendNumClasses field to given value.
+
+### HasTrendNumClasses
+
+`func (o *ForecastRequestV1) HasTrendNumClasses() bool`
+
+HasTrendNumClasses returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

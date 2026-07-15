@@ -49,6 +49,8 @@ type ForecastRequestV1 struct {
 	Timeseries map[string]float32 `json:"timeseries"`
 	// Describes the series so the pipeline can identify relevant drivers.
 	TimeseriesMetadata TimeseriesMetadata `json:"timeseries_metadata"`
+	// Optional. Trend-classification label granularity: `2` (binary up/down) or `3` (down/flat/up). Consumed only on the trend analysis path and ignored otherwise. 
+	TrendNumClasses *int32 `json:"trend_num_classes,omitempty"`
 }
 
 type _ForecastRequestV1 ForecastRequestV1
@@ -505,6 +507,38 @@ func (o *ForecastRequestV1) SetTimeseriesMetadata(v TimeseriesMetadata) {
 	o.TimeseriesMetadata = v
 }
 
+// GetTrendNumClasses returns the TrendNumClasses field value if set, zero value otherwise.
+func (o *ForecastRequestV1) GetTrendNumClasses() int32 {
+	if o == nil || IsNil(o.TrendNumClasses) {
+		var ret int32
+		return ret
+	}
+	return *o.TrendNumClasses
+}
+
+// GetTrendNumClassesOk returns a tuple with the TrendNumClasses field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ForecastRequestV1) GetTrendNumClassesOk() (*int32, bool) {
+	if o == nil || IsNil(o.TrendNumClasses) {
+		return nil, false
+	}
+	return o.TrendNumClasses, true
+}
+
+// HasTrendNumClasses returns a boolean if a field has been set.
+func (o *ForecastRequestV1) HasTrendNumClasses() bool {
+	if o != nil && !IsNil(o.TrendNumClasses) {
+		return true
+	}
+
+	return false
+}
+
+// SetTrendNumClasses gets a reference to the given int32 and assigns it to the TrendNumClasses field.
+func (o *ForecastRequestV1) SetTrendNumClasses(v int32) {
+	o.TrendNumClasses = &v
+}
+
 func (o ForecastRequestV1) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -547,6 +581,9 @@ func (o ForecastRequestV1) ToMap() (map[string]interface{}, error) {
 	}
 	toSerialize["timeseries"] = o.Timeseries
 	toSerialize["timeseries_metadata"] = o.TimeseriesMetadata
+	if !IsNil(o.TrendNumClasses) {
+		toSerialize["trend_num_classes"] = o.TrendNumClasses
+	}
 	return toSerialize, nil
 }
 
